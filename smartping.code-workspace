@@ -1,0 +1,58 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    // "terminal.integrated.shellArgs.windows": ["-NoExit", "/c", "cd d:/workspace/golang/gotraffic"],
+    // "terminal.integrated.shellArgs.windows": ["-NoExit", "/c", "cd ${workspaceRoot}"],
+    "files.trimTrailingWhitespace": true,
+    // "terminal.integrated.cwd": "${workspaceRoot}",
+    "vim.autoindent": false,
+    "vim.useCtrlKeys": false,
+    "vim.easymotion": false,
+    "vim.statusBarColorControl": false,
+    "editor.detectIndentation": false,
+    "prettier.printWidth": 120,
+    // #让prettier使用eslint的代码格式进行校验
+    "prettier.eslintIntegration": true,
+    // #去掉代码结尾的分号
+    "prettier.semi": false,
+    // #使用带引号替代双引号
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "all",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // #让函数(名)和后面的括号之间加个空格
+    "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+    "path-intellisense.mappings": { "@": "${workspaceRoot}/web/src" },
+    // #这个按用户自身习惯选择
+    "vetur.format.defaultFormatter.html": "js-beautify-html",
+    // #让vue中的js按编辑器自带的ts格式进行格式化
+    "vetur.format.defaultFormatter.js": "vscode-typescript",
+    "vetur.format.defaultFormatterOptions": {
+      "js-beautify-html": {
+        "wrap_attributes": "force-aligned"
+        // #vue组件中html代码格式化样式
+      }
+    },
+    "eslint.validate": ["javascript", "javascriptreact", "html", "vue"],
+    "remote.SSH.remotePlatform": {
+      "58.42.15.196": "linux"
+    },
+    "sqltools.connections": [
+      {
+        "database": "server/data/goTraffic.db",
+        "dialect": "SQLite",
+        "isActive": true,
+        "isConnected": true,
+        "name": "goTraffic"
+      }
+    ]
+  }
+}
