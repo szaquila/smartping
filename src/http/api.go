@@ -4,12 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/cihub/seelog"
-	"github.com/smartping/smartping/src/funcs"
-	"github.com/smartping/smartping/src/g"
-	"github.com/smartping/smartping/src/nettools"
-	"github.com/wcharczuk/go-chart"
-	"github.com/wcharczuk/go-chart/drawing"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -17,6 +11,13 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/cihub/seelog"
+	"github.com/smartping/smartping/src/funcs"
+	"github.com/smartping/smartping/src/g"
+	"github.com/smartping/smartping/src/nettools"
+	"github.com/wcharczuk/go-chart"
+	"github.com/wcharczuk/go-chart/drawing"
 )
 
 func configApiRoutes() {
@@ -36,6 +37,9 @@ func configApiRoutes() {
 		if !AuthAgentIp(r.RemoteAddr, false) {
 			if nconf.Alert["SendEmailPassword"] != "" {
 				nconf.Alert["SendEmailPassword"] = "samepasswordasbefore"
+			}
+			if nconf.Alert["CorpSecret"] != "" {
+				nconf.Alert["CorpSecret"] = "samepasswordasbefore"
 			}
 		}
 		//fmt.Print(g.Cfg.Alert["SendEmailPassword"])
@@ -499,6 +503,9 @@ func configApiRoutes() {
 		if nconfig.Alert["SendEmailPassword"] == "samepasswordasbefore" {
 			nconfig.Alert["SendEmailPassword"] = g.Cfg.Alert["SendEmailPassword"]
 		}
+		if nconfig.Alert["CorpSecret"] == "samepasswordasbefore" {
+			nconfig.Alert["CorpSecret"] = g.Cfg.Alert["CorpSecret"]
+		}
 		g.Cfg = nconfig
 		g.SelfCfg = g.Cfg.Network[g.Cfg.Addr]
 		saveerr := g.SaveConfig()
@@ -543,6 +550,78 @@ func configApiRoutes() {
 		}
 
 		err := funcs.SendMail(r.Form["SendEmailAccount"][0], r.Form["SendEmailPassword"][0], r.Form["EmailHost"][0], r.Form["RevcEmailList"][0], "报警测试邮件 - SmartPing", "报警测试邮件")
+		if err != nil {
+			preout["info"] = err.Error()
+			RenderJson(w, preout)
+			return
+		}
+		preout["status"] = "true"
+		RenderJson(w, preout)
+	})
+
+	//发送测试消息
+	http.HandleFunc("/api/sendwechattest.json", func(w http.ResponseWriter, r *http.Request) {
+		if !AuthUserIp(r.RemoteAddr) && !AuthAgentIp(r.RemoteAddr, true) {
+			o := "Your ip address (" + r.RemoteAddr + ")  is not allowed to access this site!"
+			http.Error(w, o, 401)
+			return
+		}
+		preout := make(map[string]string)
+		r.ParseForm()
+		preout["status"] = "false"
+		if len(r.Form["CorpId"]) == 0 {
+			preout["info"] = "企业编号不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+		if len(r.Form["CorpSecret"]) == 0 {
+			preout["info"] = "企业密钥不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+		if len(r.Form["AgentId"]) == 0 {
+			preout["info"] = "应用编号不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+		if len(r.Form["RevcWechatList"]) == 0 {
+			preout["info"] = "收件用户列表不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+
+		agentId, err := funcs.StringToInt(r.Form["AgentId"][0])
+		corpId := r.Form["CorpId"][0]
+		corpSecret := r.Form["CorpSecret"][0]
+		toUser := r.Form["RevcWechatList"][0]
+		toParty := "10"
+		token := funcs.TOKEN{}
+		// token.ErrCode, _ = funcs.StringToInt64(g.Cfg.Alert["ErrCode"])
+		// token.ErrMsg = g.Cfg.Alert["ErrMsg"]
+		token.AccessToken = g.Cfg.Alert["AccessToken"]
+		token.ExpiresIn, _ = funcs.StringToInt64(g.Cfg.Alert["ExpiresIn"])
+		token.Time, _ = time.Parse("2016-01-02 15:04:05", g.Cfg.Alert["Time"])
+		if token.AccessToken == "" || time.Now().Sub(token.Time).Seconds() > float64(token.ExpiresIn)-200 {
+			token = funcs.GetAccessToken(corpId, corpSecret)
+			if token.ErrCode != 0 {
+				preout["info"] = fmt.Sprint("[func:AlertWechat] GetAccessToken Error ", token.ErrCode, token.ErrMsg)
+				RenderJson(w, preout)
+				return
+			}
+			// g.Cfg.Alert["ErrCode"] = funcs.Int64ToString(token.ErrCode)
+			// g.Cfg.Alert["ErrMsg"] = token.ErrMsg
+			g.Cfg.Alert["AccessToken"] = token.AccessToken
+			g.Cfg.Alert["ExpiresIn"] = funcs.Int64ToString(token.ExpiresIn)
+			g.Cfg.Alert["Time"] = token.Time.Format("2006-01-02 15:04:05")
+			saveerr := g.SaveConfig()
+			if saveerr != nil {
+				preout["info"] = saveerr.Error()
+				RenderJson(w, preout)
+				return
+			}
+		}
+		msg := strings.Replace(funcs.Messages(toUser, toParty, agentId, "报警测试消息 - SmartPing"), "\\\\", "\\", -1)
+		err = funcs.SendMessage(token.AccessToken, msg)
 		if err != nil {
 			preout["info"] = err.Error()
 			RenderJson(w, preout)
@@ -615,7 +694,7 @@ func configApiRoutes() {
 			},
 			XAxis: chart.XAxis{
 				Style: chart.Style{
-					//Show:     true,
+					Show:     true,
 					FontSize: 20,
 				},
 				TickPosition: chart.TickPositionBetweenTicks,
@@ -625,7 +704,7 @@ func configApiRoutes() {
 			},
 			YAxis: chart.YAxis{
 				Style: chart.Style{
-					//Show:     true,
+					Show:     true,
 					FontSize: 20,
 				},
 				Range: &chart.ContinuousRange{
@@ -642,7 +721,7 @@ func configApiRoutes() {
 			YAxisSecondary: chart.YAxis{
 				//NameStyle: chart.StyleShow(),
 				Style: chart.Style{
-					//Show:     true,
+					Show:     true,
 					FontSize: 20,
 				},
 				Range: &chart.ContinuousRange{
@@ -659,7 +738,7 @@ func configApiRoutes() {
 			Series: []chart.Series{
 				chart.ContinuousSeries{
 					Style: chart.Style{
-						//Show:        true,
+						Show:        true,
 						StrokeColor: drawing.Color{249, 246, 241, 255},
 						FillColor:   drawing.Color{249, 246, 241, 255},
 					},
@@ -668,7 +747,7 @@ func configApiRoutes() {
 				},
 				chart.ContinuousSeries{
 					Style: chart.Style{
-						//Show:        true,
+						Show:        true,
 						StrokeColor: drawing.Color{0, 204, 102, 200},
 						FillColor:   drawing.Color{0, 204, 102, 200},
 					},
@@ -678,7 +757,7 @@ func configApiRoutes() {
 				},
 				chart.ContinuousSeries{
 					Style: chart.Style{
-						//Show:        true,
+						Show:        true,
 						StrokeColor: drawing.Color{255, 0, 0, 200},
 						FillColor:   drawing.Color{255, 0, 0, 200},
 					},
@@ -688,7 +767,6 @@ func configApiRoutes() {
 			},
 		}
 		graph.Render(chart.PNG, w)
-
 	})
 
 	//代理访问

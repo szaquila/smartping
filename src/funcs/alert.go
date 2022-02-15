@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/cihub/seelog"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/smartping/smartping/src/g"
-	"github.com/smartping/smartping/src/nettools"
 	"net/smtp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/cihub/seelog"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/smartping/smartping/src/g"
+	"github.com/smartping/smartping/src/nettools"
+	// "github.com/xhit/go-simple-mail"
 )
 
 func StartAlert() {
@@ -50,8 +52,10 @@ func StartAlert() {
 				if g.Cfg.Alert["SendEmailAccount"] != "" && g.Cfg.Alert["SendEmailPassword"] != "" && g.Cfg.Alert["EmailHost"] != "" && g.Cfg.Alert["RevcEmailList"] != "" {
 					go AlertSendMail(l)
 				}
+				if g.Cfg.Alert["AgentId"] != "" && g.Cfg.Alert["CorpId"] != "" && g.Cfg.Alert["CorpSecret"] != "" && g.Cfg.Alert["RevcWechatList"] != "" {
+					go AlertWechat(l)
+				}
 			}
-
 		}
 	}
 	seelog.Info("[func:StartAlert] ", "AlertCheck finish ")
@@ -140,4 +144,57 @@ func SendMail(user, pwd, host, to, subject, body string) error {
 		return err
 	}
 	return nil
+}
+
+func AlertWechat(t g.AlertLog) {
+	hops := []nettools.Mtr{}
+	err := json.Unmarshal([]byte(t.Tracert), &hops)
+	if err != nil {
+		seelog.Error("[func:AlertWechat] json Error ", err)
+		return
+	}
+	if hops[len(hops)-1].Loss == 0 {
+		seelog.Info("[func:AlertWechat] loss 0")
+		return
+	}
+	mtrstr := bytes.NewBufferString("")
+	fmt.Fprintf(mtrstr, "Host     Loss\n")
+	for i, hop := range hops {
+		fmt.Fprintf(mtrstr, "%d %s    %.2f\n", i+1, hop.Host, ((float64(hop.Loss) / float64(hop.Send)) * 100))
+	}
+	title := "【" + t.Fromname + "->" + t.Targetname + "】网络异常报警（" + t.Logtime + "）- SmartPing\n"
+	content := "报警时间：" + t.Logtime + " \n" // 来路：" + t.Fromname + "(" + t.Fromip + ") \n目的：" + t.Targetname + "(" + t.Targetip + ") \n"
+	agentId, err := StringToInt(g.Cfg.Alert["AgentId"])
+	corpId := g.Cfg.Alert["CorpId"]
+	corpSecret := g.Cfg.Alert["CorpSecret"]
+	toUser := g.Cfg.Alert["RevcWechatList"]
+	toParty := "10"
+	token := TOKEN{}
+	// token.ErrCode, _ = funcs.StringToInt64(g.Cfg.Alert["ErrCode"])
+	// token.ErrMsg = g.Cfg.Alert["ErrMsg"]
+	token.AccessToken = g.Cfg.Alert["AccessToken"]
+	token.ExpiresIn, _ = StringToInt64(g.Cfg.Alert["ExpiresIn"])
+	token.Time, _ = time.Parse("2016-01-02 15:04:05", g.Cfg.Alert["Time"])
+	if token.AccessToken == "" || time.Now().Sub(token.Time).Seconds() > float64(token.ExpiresIn)-200 {
+		token = GetAccessToken(corpId, corpSecret)
+		if token.ErrCode != 0 {
+			seelog.Error("[func:AlertWechat] GetAccessToken Error ", token.ErrCode, token.ErrMsg)
+			return
+		}
+		// g.Cfg.Alert["ErrCode"] = funcs.Int64ToString(token.ErrCode)
+		// g.Cfg.Alert["ErrMsg"] = token.ErrMsg
+		g.Cfg.Alert["AccessToken"] = token.AccessToken
+		g.Cfg.Alert["ExpiresIn"] = Int64ToString(token.ExpiresIn)
+		g.Cfg.Alert["Time"] = token.Time.Format("2006-01-02 15:04:05")
+		saveerr := g.SaveConfig()
+		if saveerr != nil {
+			seelog.Error("[func:AlertWechat] GetAccessToken Error ", saveerr.Error())
+			return
+		}
+	}
+	msg := strings.Replace(Messages(toUser, toParty, agentId, title+content+mtrstr.String()), "\\\\", "\\", -1)
+	err = SendMessage(token.AccessToken, msg)
+	if err != nil {
+		seelog.Error("[func:AlertWechat] SendWechat Error ", err)
+	}
 }
