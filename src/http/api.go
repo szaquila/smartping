@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -18,6 +19,7 @@ import (
 	"github.com/smartping/smartping/src/nettools"
 	"github.com/wcharczuk/go-chart"
 	"github.com/wcharczuk/go-chart/drawing"
+	"github.com/wzv5/pping/pkg/ping"
 )
 
 func configApiRoutes() {
@@ -295,10 +297,13 @@ func configApiRoutes() {
 			}
 		}
 		g.ToolLimit[r.RemoteAddr] = nowtime
-		target := strings.Replace(strings.Replace(r.Form["t"][0], "https://", "", -1), "http://", "", -1)
+		reg := regexp.MustCompile("http[s]{0,1}://")
+		// target := strings.Replace(strings.Replace(r.Form["t"][0], "https://", "", -1), "http://", "", -1)
+		targets := strings.Split(reg.ReplaceAllString(r.Form["t"][0], ""), " ")
+		target := targets[0]
+		mode := r.Form["m"][0]
 		preout.Ping = g.PingSt{}
 		preout.Ping.MinDelay = -1
-		lossPK := 0
 		ipaddr, err := net.ResolveIPAddr("ip", target)
 		if err != nil {
 			preout.Error = "Unable to resolve destination host"
@@ -306,47 +311,120 @@ func configApiRoutes() {
 			return
 		}
 		preout.Ip = ipaddr.String()
-		var channel chan float64 = make(chan float64, 5)
-		var wg sync.WaitGroup
-		for i := 0; i < 5; i++ {
-			wg.Add(1)
-			go func() {
-				delay, err := nettools.RunPing(ipaddr, 3*time.Second, 64, i)
-				if err != nil {
-					channel <- -1.00
-				} else {
-					channel <- delay
-				}
-				wg.Done()
-			}()
-			time.Sleep(time.Duration(100 * time.Millisecond))
-		}
-		wg.Wait()
-		for i := 0; i < 5; i++ {
-			select {
-			case delay := <-channel:
-				if delay != -1.00 {
-					preout.Ping.AvgDelay = preout.Ping.AvgDelay + delay
-					if preout.Ping.MaxDelay < delay {
-						preout.Ping.MaxDelay = delay
+		if mode == "icmp" {
+			lossPK := 0
+			var channel chan float64 = make(chan float64, 5)
+			var wg sync.WaitGroup
+			for i := 0; i < 5; i++ {
+				wg.Add(1)
+				go func() {
+					delay, err := nettools.RunPing(ipaddr, 3*time.Second, 64, i)
+					if err != nil {
+						channel <- -1.00
+					} else {
+						channel <- delay
 					}
-					if preout.Ping.MinDelay == -1 || preout.Ping.MinDelay > delay {
-						preout.Ping.MinDelay = delay
-					}
-					preout.Ping.RevcPk = preout.Ping.RevcPk + 1
-				} else {
-					lossPK = lossPK + 1
-				}
-				preout.Ping.SendPk = preout.Ping.SendPk + 1
-				preout.Ping.LossPk = int((float64(lossPK) / float64(preout.Ping.SendPk)) * 100)
+					wg.Done()
+				}()
+				time.Sleep(time.Duration(100 * time.Millisecond))
 			}
-		}
-		if preout.Ping.RevcPk > 0 {
-			preout.Ping.AvgDelay = preout.Ping.AvgDelay / float64(preout.Ping.RevcPk)
+			wg.Wait()
+			for i := 0; i < 5; i++ {
+				select {
+				case delay := <-channel:
+					if delay != -1.00 {
+						preout.Ping.AvgDelay = preout.Ping.AvgDelay + delay
+						if preout.Ping.MaxDelay < delay {
+							preout.Ping.MaxDelay = delay
+						}
+						if preout.Ping.MinDelay == -1 || preout.Ping.MinDelay > delay {
+							preout.Ping.MinDelay = delay
+						}
+						preout.Ping.RevcPk = preout.Ping.RevcPk + 1
+					} else {
+						lossPK = lossPK + 1
+					}
+					preout.Ping.SendPk = preout.Ping.SendPk + 1
+					preout.Ping.LossPk = int((float64(lossPK) / float64(preout.Ping.SendPk)) * 100)
+				}
+			}
+			if preout.Ping.RevcPk > 0 {
+				preout.Ping.AvgDelay = preout.Ping.AvgDelay / float64(preout.Ping.RevcPk)
+			} else {
+				preout.Ping.AvgDelay = 3000
+				preout.Ping.MinDelay = 3000
+				preout.Ping.MaxDelay = 3000
+			}
 		} else {
-			preout.Ping.AvgDelay = 3000
-			preout.Ping.MinDelay = 3000
-			preout.Ping.MaxDelay = 3000
+			timeout := time.Second * 4
+			s := funcs.Statistics{}
+			switch mode {
+			case "http":
+				method := "GET"
+				url := "http:/" + preout.Ip
+				p := ping.NewHttpPing(method, url, timeout)
+				p.DisableHttp2 = false
+				p.DisableCompression = false
+				p.Insecure = false
+				p.Referrer = ""
+				p.UserAgent = ""
+				p.IP = ipaddr.IP
+				s, err = funcs.RunPing(p)
+			case "tcp":
+				port := 80
+				if len(targets) > 1 {
+					port, _ = funcs.StringToInt(targets[1])
+				}
+				p := ping.NewTcpPing(preout.Ip, uint16(port), timeout)
+				s, err = funcs.RunPing(p)
+			case "tls":
+				port := 443
+				if len(targets) > 1 {
+					port, _ = funcs.StringToInt(targets[1])
+				}
+				handTime := time.Second * 10
+				p := ping.NewTlsPing(preout.Ip, uint16(port), timeout, handTime)
+				p.TlsVersion = 0
+				p.Insecure = false
+				p.IP = ipaddr.IP
+				s, err = funcs.RunPing(p)
+			case "dns":
+				port := 53
+				if len(targets) > 1 {
+					port, _ = funcs.StringToInt(targets[1])
+				}
+				qType := "NS"
+				if len(targets) > 2 {
+					qType = targets[2]
+				}
+				p := ping.NewDnsPing(preout.Ip, timeout)
+				p.Port = uint16(port)
+				if port == 53 {
+					p.Net = "udp"
+				} else {
+					p.Net = "tcp-tls"
+				}
+				p.Type = qType
+				p.Domain = target
+				p.Insecure = false
+				s, err = funcs.RunPing(p)
+			case "icmp":
+				fallthrough
+			default:
+				p := ping.NewIcmpPing(preout.Ip, timeout)
+				s, err = funcs.RunPing(p)
+			}
+			if err != nil {
+				preout.Error = "Unable to resolve destination host " + target
+				RenderJson(w, preout)
+				return
+			}
+			preout.Ping.AvgDelay = s.Total / float64(s.Ok)
+			preout.Ping.MinDelay = s.Min
+			preout.Ping.MaxDelay = s.Max
+			preout.Ping.SendPk = s.Sent
+			preout.Ping.RevcPk = s.Ok
+			preout.Ping.LossPk = s.Failed
 		}
 		preout.Status = "true"
 		w.Header().Set("Content-Type", "application/json")

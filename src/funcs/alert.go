@@ -168,7 +168,7 @@ func AlertWechat(t g.AlertLog) {
 	corpId := g.Cfg.Alert["CorpId"]
 	corpSecret := g.Cfg.Alert["CorpSecret"]
 	toUser := g.Cfg.Alert["RevcWechatList"]
-	toParty := "10"
+	toParty := ""
 	token := TOKEN{}
 	// token.ErrCode, _ = funcs.StringToInt64(g.Cfg.Alert["ErrCode"])
 	// token.ErrMsg = g.Cfg.Alert["ErrMsg"]

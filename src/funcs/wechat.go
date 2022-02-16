@@ -2,12 +2,20 @@ package funcs
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/wzv5/pping/pkg/ping"
 )
 
 type TOKEN struct {
@@ -88,18 +96,6 @@ func Messages(toUser string, toParty string, agentId int, content string) string
 	return string(sed_msg)
 }
 
-func StringToInt(e string) (int, error) {
-	return strconv.Atoi(e)
-}
-
-func StringToInt64(e string) (int64, error) {
-	return strconv.ParseInt(strings.Trim(e, " "), 10, 64)
-}
-
-func Int64ToString(e int64) string {
-	return strconv.FormatInt(e, 10)
-}
-
 // func main() {
 // 	touser := "BigBoss"  //企业号中的用户帐号，在zabbix用户Media中配置，如果配置不正常，将按部门发送。
 // 	toparty := "2"       //企业号中的部门id。
@@ -115,3 +111,128 @@ func Int64ToString(e int64) string {
 // 	//  fmt.Println(strings.Replace(msg,"\\\\","\\",-1))
 // 	Send_Message(accessToken,msg)
 // }
+
+func StringToInt(e string) (int, error) {
+	return strconv.Atoi(e)
+}
+
+func StringToInt64(e string) (int64, error) {
+	return strconv.ParseInt(strings.Trim(e, " "), 10, 64)
+}
+
+func Int64ToString(e int64) string {
+	return strconv.FormatInt(e, 10)
+}
+
+func PingToChan(ctx context.Context, p ping.IPing) <-chan ping.IPingResult {
+	c := make(chan ping.IPingResult)
+	go func() {
+		c <- p.PingContext(ctx)
+	}()
+	return c
+}
+
+func RunPing(p ping.IPing) (Statistics, error) {
+	count := 5
+	interval := time.Second * 1
+	if count > 1 {
+		// 预热，由于某些资源需要初始化，首次运行会耗时较长
+		p.Ping()
+	}
+
+	s := Statistics{}
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	ctx, cancel := context.WithCancel(context.Background())
+
+	for i := 1; i <= count; i++ {
+		select {
+		case result := <-PingToChan(ctx, p):
+			PrintResult(i, result)
+			s.append(result)
+		case <-c:
+			goto end
+		}
+
+		// 最后一次 ping 结束后不再等待
+		if i == count {
+			break
+		}
+
+		select {
+		case <-c:
+			goto end
+		case <-time.After(interval):
+		}
+
+		// 再次检查是否停止，上面的检查可能由于延迟为0而始终无法停止
+		select {
+		case <-c:
+			goto end
+		default:
+		}
+	}
+
+end:
+	cancel()
+	// if count > 1 {
+	// 	s.print()
+	// }
+	if s.Sent == 0 || s.Failed != 0 {
+		return s, errors.New("ping error")
+	}
+	return s, nil
+}
+
+type Statistics struct {
+	Max, Min, Total  float64
+	Sent, Ok, Failed int
+}
+
+func (s *Statistics) append(result ping.IPingResult) {
+	if result == nil {
+		return
+	}
+	s.Sent++
+	if result.Error() != nil {
+		s.Failed++
+		return
+	}
+	t := float64(result.Result())
+	if s.Ok == 0 {
+		s.Min = t
+		s.Max = t
+	} else {
+		if t < s.Min {
+			s.Min = t
+		} else if t > s.Max {
+			s.Max = t
+		}
+	}
+	s.Total += t
+	s.Ok++
+}
+
+func (s *Statistics) clear() {
+	s.Max = 0
+	s.Min = 0
+	s.Total = 0
+	s.Sent = 0
+	s.Ok = 0
+	s.Failed = 0
+}
+
+func (s *Statistics) print() {
+	if s.Sent == 0 {
+		return
+	}
+	fmt.Println()
+	fmt.Printf("\tsent = %d, ok = %d, failed = %d (%.2f%%)\n", s.Sent, s.Ok, s.Failed, float64(100*s.Failed)/float64(s.Sent))
+	if s.Ok > 0 {
+		fmt.Printf("\tmin = %f ms, max = %f ms, avg = %.2f ms\n", s.Min, s.Max, s.Total/float64(s.Ok))
+	}
+}
+
+func PrintResult(i int, r ping.IPingResult) {
+	log.Printf("[%d] %v\n", i, r)
+}
