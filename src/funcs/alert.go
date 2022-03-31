@@ -53,6 +53,7 @@ func StartAlert() {
 					go AlertSendMail(l)
 				}
 				if g.Cfg.Alert["AgentId"] != "" && g.Cfg.Alert["CorpId"] != "" && g.Cfg.Alert["CorpSecret"] != "" && g.Cfg.Alert["RevcWechatList"] != "" {
+					seelog.Info("[func:StartAlert] ", "AlertCheck SendWechat ")
 					go AlertWechat(l)
 				}
 			}
@@ -67,7 +68,7 @@ func CheckAlertStatus(v map[string]string) bool {
 	}
 	Thdchecksec, _ := strconv.Atoi(v["Thdchecksec"])
 	timeStartStr := time.Unix((time.Now().Unix() - int64(Thdchecksec)), 0).Format("2006-01-02 15:04")
-	querysql := "SELECT count(1) cnt FROM  `pinglog` where logtime > '" + timeStartStr + "' and target = '" + v["Addr"] + "' and (cast(avgdelay as double) > " + v["Thdavgdelay"] + " or cast(losspk as double) > " + v["Thdloss"] + ") "
+	querysql := "SELECT count(1) cnt FROM  `pinglog` where logtime >= '" + timeStartStr + "' and target = '" + v["Addr"] + "' and (cast(avgdelay as double) > " + v["Thdavgdelay"] + " or cast(losspk as double) > " + v["Thdloss"] + ") "
 	rows, err := g.Db.Query(querysql)
 	defer rows.Close()
 	seelog.Debug("[func:StartAlert] ", querysql)
@@ -188,11 +189,11 @@ func AlertWechat(t g.AlertLog) {
 		g.Cfg.Alert["Time"] = token.Time.Format("2006-01-02 15:04:05")
 		saveerr := g.SaveConfig()
 		if saveerr != nil {
-			seelog.Error("[func:AlertWechat] GetAccessToken Error ", saveerr.Error())
+			seelog.Error("[func:AlertWechat] SaveAccessToken Error ", saveerr.Error())
 			return
 		}
 	}
-	msg := strings.Replace(Messages(toUser, toParty, agentId, title+content+mtrstr.String()), "\\\\", "\\", -1)
+	msg := strings.Replace(Messages(toUser, toParty, agentId, content+mtrstr.String(), title, ""), "\\\\", "\\", -1)
 	err = SendMessage(token.AccessToken, msg)
 	if err != nil {
 		seelog.Error("[func:AlertWechat] SendWechat Error ", err)

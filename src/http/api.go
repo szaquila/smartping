@@ -40,6 +40,9 @@ func configApiRoutes() {
 			if nconf.Alert["SendEmailPassword"] != "" {
 				nconf.Alert["SendEmailPassword"] = "samepasswordasbefore"
 			}
+			if nconf.Alert["CorpId"] != "" {
+				nconf.Alert["CorpId"] = "samepasswordasbefore"
+			}
 			if nconf.Alert["CorpSecret"] != "" {
 				nconf.Alert["CorpSecret"] = "samepasswordasbefore"
 			}
@@ -581,6 +584,9 @@ func configApiRoutes() {
 		if nconfig.Alert["SendEmailPassword"] == "samepasswordasbefore" {
 			nconfig.Alert["SendEmailPassword"] = g.Cfg.Alert["SendEmailPassword"]
 		}
+		if nconfig.Alert["CorpId"] == "samepasswordasbefore" {
+			nconfig.Alert["CorpId"] = g.Cfg.Alert["CorpId"]
+		}
 		if nconfig.Alert["CorpSecret"] == "samepasswordasbefore" {
 			nconfig.Alert["CorpSecret"] = g.Cfg.Alert["CorpSecret"]
 		}
@@ -621,13 +627,17 @@ func configApiRoutes() {
 			RenderJson(w, preout)
 			return
 		}
+		password := r.Form["SendEmailPassword"][0]
+		if password == "samepasswordasbefore" {
+			password = g.Cfg.Alert["SendEmailPassword"]
+		}
 		if len(r.Form["RevcEmailList"]) == 0 {
 			preout["info"] = "收件邮箱列表不能为空!"
 			RenderJson(w, preout)
 			return
 		}
 
-		err := funcs.SendMail(r.Form["SendEmailAccount"][0], r.Form["SendEmailPassword"][0], r.Form["EmailHost"][0], r.Form["RevcEmailList"][0], "报警测试邮件 - SmartPing", "报警测试邮件")
+		err := funcs.SendMail(r.Form["SendEmailAccount"][0], password, r.Form["EmailHost"][0], r.Form["RevcEmailList"][0], "报警测试邮件 - SmartPing", "报警测试邮件")
 		if err != nil {
 			preout["info"] = err.Error()
 			RenderJson(w, preout)
@@ -671,8 +681,14 @@ func configApiRoutes() {
 		agentId, err := funcs.StringToInt(r.Form["AgentId"][0])
 		corpId := r.Form["CorpId"][0]
 		corpSecret := r.Form["CorpSecret"][0]
+		if corpId == "samepasswordasbefore" {
+			corpId = g.Cfg.Alert["CorpId"]
+		}
+		if corpSecret == "samepasswordasbefore" {
+			corpSecret = g.Cfg.Alert["CorpSecret"]
+		}
 		toUser := r.Form["RevcWechatList"][0]
-		toParty := "10"
+		toParty := ""
 		token := funcs.TOKEN{}
 		// token.ErrCode, _ = funcs.StringToInt64(g.Cfg.Alert["ErrCode"])
 		// token.ErrMsg = g.Cfg.Alert["ErrMsg"]
@@ -698,7 +714,7 @@ func configApiRoutes() {
 				return
 			}
 		}
-		msg := strings.Replace(funcs.Messages(toUser, toParty, agentId, "报警测试消息 - SmartPing"), "\\\\", "\\", -1)
+		msg := strings.Replace(funcs.Messages(toUser, toParty, agentId, "测试消息", "SmartPing", ""), "\\\\", "\\", -1)
 		err = funcs.SendMessage(token.AccessToken, msg)
 		if err != nil {
 			preout["info"] = err.Error()

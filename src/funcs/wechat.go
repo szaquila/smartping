@@ -38,12 +38,12 @@ type Textcard struct {
 }
 
 type MESSAGES struct {
-	Touser  string `json:"touser"`
-	Toparty string `json:"toparty"`
-	Msgtype string `json:"msgtype"`
-	Agentid int    `json:"agentid"`
-	Text    Text   `json:"text"`
-	Safe    int    `json:"safe"`
+	Touser   string   `json:"touser"`
+	Toparty  string   `json:"toparty"`
+	Msgtype  string   `json:"msgtype"`
+	Agentid  int      `json:"agentid"`
+	Text     Text     `json:"text"`
+	Textcard Textcard `json:"textcard"`
 }
 
 func GetAccessToken(corpId, corpSecret string) TOKEN {
@@ -82,14 +82,22 @@ func SendMessage(accessToken, msg string) (err error) {
 	return
 }
 
-func Messages(toUser string, toParty string, agentId int, content string) string {
+func Messages(toUser string, toParty string, agentId int, content, title, url string) string {
 	msg := MESSAGES{
 		Touser:  toUser,
 		Toparty: toParty,
-		Msgtype: "textcard",
 		Agentid: agentId,
-		Safe:    0,
 		Text:    Text{Content: content},
+	}
+	if title != "" {
+		msg.Msgtype = "textcard"
+		if url == "" {
+			url = "https://cacti197.a.yjidc.com:20080/smartping/"
+		}
+		msg.Textcard = Textcard{Title: title, Description: content, Url: url}
+	} else {
+		msg.Msgtype = "text"
+		msg.Text = Text{Content: content}
 	}
 	sed_msg, _ := json.Marshal(msg)
 	//fmt.Printf("%s",string(sed_msg))

@@ -184,11 +184,11 @@
               <div class="control-group" style="width: 46%;float: left;margin-left: 20px;">
                 <label class="control-label" for="Tsymbolsize">安全密钥</label>
                 <div class="controls">
-                  <input type="password" style="width:100%" id="CorpSecret" value="">
+                  <input type="password" style="width:97%" id="CorpSecret" value="">
                 </div> <!-- /controls -->
               </div> <!-- /control-group -->
               <div class="control-group">
-                <label class="control-label" for="Tsymbolsize">收件用户列表(分号隔开)</label>
+                <label class="control-label" for="Tsymbolsize">收件用户列表(分隔符隔开)</label>
                 <div class="controls">
                   <input type="text" style="width:97%" id="RevcWechatList" value="">
                 </div> <!-- /controls -->
@@ -747,10 +747,10 @@
       NewtopoMap = new Map()
       NewtopoMap["Name"] = newAgentName
       NewtopoMap["Addr"] = newAgentIp
-      NewtopoMap["Thdchecksec"] = "900"
+      NewtopoMap["Thdchecksec"] = "240"
       NewtopoMap["Thdoccnum"] = "3"
       NewtopoMap["Thdavgdelay"] = "200"
-      NewtopoMap["Thdloss"] = "30"
+      NewtopoMap["Thdloss"] = "3"
       config["Network"][config["Addr"]]["Topology"].push(NewtopoMap)
       sessionStorage.setItem("config", JSON.stringify(config))
       $("#newAgentName").val("")
@@ -928,13 +928,13 @@
     {
       if ($(obj).is(":checked")) {
         $(obj).closest("tr").find(".topoModalListThdchecksec").removeAttr("disabled")
-        $(obj).closest("tr").find(".topoModalListThdchecksec").val("900")
+        $(obj).closest("tr").find(".topoModalListThdchecksec").val("240")
         $(obj).closest("tr").find(".topoModalListThdoccnum").removeAttr("disabled")
         $(obj).closest("tr").find(".topoModalListThdoccnum").val("3")
         $(obj).closest("tr").find(".topoModalListThdavgdelay").removeAttr("disabled")
         $(obj).closest("tr").find(".topoModalListThdavgdelay").val("200")
         $(obj).closest("tr").find(".topoModalListThdloss").removeAttr("disabled")
-        $(obj).closest("tr").find(".topoModalListThdloss").val("30")
+        $(obj).closest("tr").find(".topoModalListThdloss").val("3")
       } else {
         $(obj).closest("tr").find(".topoModalListThdchecksec").attr("disabled", "true")
         $(obj).closest("tr").find(".topoModalListThdchecksec").val("0")

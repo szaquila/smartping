@@ -1,14 +1,17 @@
+// centos 6.1     go build -tags libsqlite3 -ldflags '-s -w' -o bin/smartping src/smartping.go
+// alpine(docker) CC=/usr/local/musl/bin/musl-gcc go build -tags libsqlite3 -tags musl -ldflags '-linkmode external -extldflags "-static" -s -w' -o bin/smartping src/smartping.go
 package main
 
 import (
 	"flag"
 	"fmt"
+	"os"
+	"runtime"
+
 	"github.com/jakecoffman/cron"
 	"github.com/smartping/smartping/src/funcs"
 	"github.com/smartping/smartping/src/g"
 	"github.com/smartping/smartping/src/http"
-	"os"
-	"runtime"
 	//"sync"
 )
 
