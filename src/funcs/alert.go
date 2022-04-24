@@ -21,6 +21,9 @@ func StartAlert() {
 	for _, v := range g.SelfCfg.Topology {
 		if v["Addr"] != g.SelfCfg.Addr {
 			sFlag := CheckAlertStatus(v)
+			if !sFlag {
+				sFlag = CheckDelayStatus(v)
+			}
 			if sFlag {
 				g.AlertStatus[v["Addr"]] = true
 			}
@@ -71,6 +74,54 @@ func CheckAlertStatus(v map[string]string) bool {
 	querysql := "SELECT count(1) cnt FROM  `pinglog` where logtime >= '" + timeStartStr + "' and target = '" + v["Addr"] + "' and (cast(avgdelay as double) > " + v["Thdavgdelay"] + " or cast(losspk as double) > " + v["Thdloss"] + ") "
 	rows, err := g.Db.Query(querysql)
 	defer rows.Close()
+	seelog.Debug("[func:StartAlert] ", querysql)
+	if err != nil {
+		seelog.Error("[func:StartAlert] Query Error ", err)
+		return false
+	}
+	for rows.Next() {
+		l := new(Cnt)
+		err := rows.Scan(&l.Cnt)
+		if err != nil {
+			seelog.Error("[func:StartAlert]", err)
+			return false
+		}
+		Thdoccnum, _ := strconv.Atoi(v["Thdoccnum"])
+		if l.Cnt <= Thdoccnum {
+			return true
+		} else {
+			return false
+		}
+	}
+	return false
+}
+
+func CheckDelayStatus(v map[string]string) bool {
+	type Cnt struct {
+		Cnt int
+	}
+	Thdchecksec, _ := strconv.Atoi(v["Thdchecksec"])
+	timeStartStr := time.Unix((time.Now().Unix() - int64(Thdchecksec)), 0).Format("2006-01-02 15:04")
+	thdavgdelay := 100.0
+	querysql := "SELECT avg(avgdelay) cnt FROM  `pinglog` where logtime < '" + timeStartStr + "' and target = '" + v["Addr"] + "' order by logtime desc limit 10"
+	rows, err := g.Db.Query(querysql)
+	defer rows.Close()
+	seelog.Debug("[func:StartAlert] ", querysql)
+	if err != nil {
+		seelog.Error("[func:StartAlert] Query Error ", err)
+		return false
+	}
+	for rows.Next() {
+		err := rows.Scan(&thdavgdelay)
+		if err != nil {
+			seelog.Error("[func:StartAlert]", err)
+			return false
+		}
+	}
+
+	querysql = "SELECT count(1) cnt FROM  `pinglog` where logtime >= '" + timeStartStr + "' and target = '" + v["Addr"] + "' and cast(avgdelay as double) > " + fmt.Sprintf("%f", thdavgdelay*1.5)
+	rows, err = g.Db.Query(querysql)
+	// defer rows.Close()
 	seelog.Debug("[func:StartAlert] ", querysql)
 	if err != nil {
 		seelog.Error("[func:StartAlert] Query Error ", err)

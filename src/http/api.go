@@ -46,6 +46,12 @@ func configApiRoutes() {
 			if nconf.Alert["CorpSecret"] != "" {
 				nconf.Alert["CorpSecret"] = "samepasswordasbefore"
 			}
+			if nconf.Alert["CorpToken"] != "" {
+				nconf.Alert["CorpToken"] = "samepasswordasbefore"
+			}
+			if nconf.Alert["CorpEncodingAESKey"] != "" {
+				nconf.Alert["CorpEncodingAESKey"] = "samepasswordasbefore"
+			}
 		}
 		//fmt.Print(g.Cfg.Alert["SendEmailPassword"])
 		onconf, _ := json.Marshal(nconf)
@@ -590,6 +596,12 @@ func configApiRoutes() {
 		if nconfig.Alert["CorpSecret"] == "samepasswordasbefore" {
 			nconfig.Alert["CorpSecret"] = g.Cfg.Alert["CorpSecret"]
 		}
+		if nconfig.Alert["CorpToken"] == "samepasswordasbefore" {
+			nconfig.Alert["CorpToken"] = g.Cfg.Alert["CorpToken"]
+		}
+		if nconfig.Alert["CorpEncodingAESKey"] == "samepasswordasbefore" {
+			nconfig.Alert["CorpEncodingAESKey"] = g.Cfg.Alert["CorpEncodingAESKey"]
+		}
 		g.Cfg = nconfig
 		g.SelfCfg = g.Cfg.Network[g.Cfg.Addr]
 		saveerr := g.SaveConfig()
@@ -723,6 +735,55 @@ func configApiRoutes() {
 		}
 		preout["status"] = "true"
 		RenderJson(w, preout)
+	})
+
+	// 接收企微消息
+	http.HandleFunc("/api/wechatmsg.json", func(w http.ResponseWriter, r *http.Request) {
+		preout := make(map[string]string)
+		r.ParseForm()
+		preout["status"] = "false"
+		if len(r.Form["msg_signature"]) == 0 {
+			preout["info"] = "企业微信加密签名不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+		if len(r.Form["timestamp"]) == 0 {
+			preout["info"] = "时间戳不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+		if len(r.Form["nonce"]) == 0 {
+			preout["info"] = "随机数不能为空!"
+			RenderJson(w, preout)
+			return
+		}
+		if r.Method == "GET" {
+			if len(r.Form["echostr"]) == 0 {
+				preout["info"] = "加密的字符串不能为空!"
+				RenderJson(w, preout)
+				return
+			}
+			// verifyURL(w, r.Form["msg_signature"][0], r.Form["timestamp"][0], r.Form["nonce"][0], r.Form["echostr"][0])
+			return
+		} else {
+			if len(r.Form["ToUserName"]) == 0 {
+				preout["info"] = "加密的字符串不能为空!"
+				RenderJson(w, preout)
+				return
+			}
+			if len(r.Form["AgentID"]) == 0 {
+				preout["info"] = "加密的字符串不能为空!"
+				RenderJson(w, preout)
+				return
+			}
+			if len(r.Form["Encrypt"]) == 0 {
+				preout["info"] = "加密的字符串不能为空!"
+				RenderJson(w, preout)
+				return
+			}
+			// decryptMsg(r.Form["msg_signature"[0]], r.Form["timestamp"][0], r.Form["nonce"][0])
+			// encryptMsg(w, r)
+		}
 	})
 
 	//Ping画图

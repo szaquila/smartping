@@ -187,6 +187,18 @@
                   <input type="password" style="width:97%" id="CorpSecret" value="">
                 </div> <!-- /controls -->
               </div> <!-- /control-group -->
+              <div class="control-group" style="width: 46%;float: left;margin-left: 20px;">
+                <label class="control-label" for="Tsymbolsize">接收令牌</label>
+                <div class="controls">
+                  <input type="password" style="width:97%" id="CorpToken" value="">
+                </div> <!-- /controls -->
+              </div> <!-- /control-group -->
+              <div class="control-group" style="width: 46%;float: left;margin-left: 20px;">
+                <label class="control-label" for="Tsymbolsize">加密密钥</label>
+                <div class="controls">
+                  <input type="password" style="width:97%" id="CorpEncodingAESKey" value="">
+                </div> <!-- /controls -->
+              </div> <!-- /control-group -->
               <div class="control-group">
                 <label class="control-label" for="Tsymbolsize">收件用户列表(分隔符隔开)</label>
                 <div class="controls">
@@ -747,7 +759,7 @@
       NewtopoMap = new Map()
       NewtopoMap["Name"] = newAgentName
       NewtopoMap["Addr"] = newAgentIp
-      NewtopoMap["Thdchecksec"] = "240"
+      NewtopoMap["Thdchecksec"] = "180"
       NewtopoMap["Thdoccnum"] = "3"
       NewtopoMap["Thdavgdelay"] = "200"
       NewtopoMap["Thdloss"] = "3"
@@ -928,7 +940,7 @@
     {
       if ($(obj).is(":checked")) {
         $(obj).closest("tr").find(".topoModalListThdchecksec").removeAttr("disabled")
-        $(obj).closest("tr").find(".topoModalListThdchecksec").val("240")
+        $(obj).closest("tr").find(".topoModalListThdchecksec").val("180")
         $(obj).closest("tr").find(".topoModalListThdoccnum").removeAttr("disabled")
         $(obj).closest("tr").find(".topoModalListThdoccnum").val("3")
         $(obj).closest("tr").find(".topoModalListThdavgdelay").removeAttr("disabled")
@@ -1193,6 +1205,8 @@
       config["Alert"]["RevcEmailList"] = $("#RevcEmailList").val();
       config["Alert"]["CorpId"] = $("#CorpId").val();
       config["Alert"]["CorpSecret"] = $("#CorpSecret").val();
+      config["Alert"]["CorpToken"] = $("#CorpToken").val();
+      config["Alert"]["CorpEncodingAESKey"] = $("#CorpEncodingAESKey").val();
       config["Alert"]["AgentId"] = $("#AgentId").val();
       config["Alert"]["RevcWechatList"] = $("#RevcWechatList").val();
       config["Authiplist"] = $("#Authiplist").val();
@@ -1333,6 +1347,8 @@
         $("#RevcEmailList").val(config["Alert"]["RevcEmailList"]);
         $("#CorpId").val(config["Alert"]["CorpId"]);
         $("#CorpSecret").val(config["Alert"]["CorpSecret"]);
+        $("#CorpToken").val(config["Alert"]["CorpToken"]);
+        $("#CorpEncodingAESKey").val(config["Alert"]["CorpEncodingAESKey"]);
         $("#AgentId").val(config["Alert"]["AgentId"]);
         $("#RevcWechatList").val(config["Alert"]["RevcWechatList"]);
         $("#Authiplist").val(config["Authiplist"]);
