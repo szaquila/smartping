@@ -41,9 +41,9 @@
         <li><a  id="cfgUrl"  href="config.html"><i class="icon-cog"></i><span>系统配置</span> </a> </li>
       </ul>
     </div>
-    <!-- /container --> 
+    <!-- /container -->
   </div>
-  <!-- /subnavbar-inner --> 
+  <!-- /subnavbar-inner -->
 </div>
 <!-- /subnavbar -->
 <div class="main" style="margin-top:-20px;">
@@ -123,17 +123,17 @@
 
 
     </div>
-    <!-- /container --> 
+    <!-- /container -->
   </div>
-  <!-- /main-inner --> 
+  <!-- /main-inner -->
 </div>
 <!-- /main -->
 
-<div id="alert" class="modal fade" tabindex="-1" style="width: 550px;height:500px;">
+<div id="alert" class="modal fade" tabindex="-1" style="width: 550px;height:auto;">
   <!--<div class="modal-dialog">
        <div class="modal-content"  >-->
            <table class="table">
-             <thead><tr><td>Host</td><td>Loss%</td><td>Snt</td><td>Last</td><td>Avg</td><td>Best</td><td>Wrst</td><td>StDev</td></th></thead>
+             <thead><tr><td colspan="8" class="mtr"></td></tr><tr><td>Host</td><td>Loss%</td><td>Snt</td><td>Last</td><td>Avg</td><td>Best</td><td>Wrst</td><td>StDev</td></th></thead>
              <tbody class="tracertdata"></tbody>
            </table>
   <!-- </div>
@@ -146,17 +146,17 @@
     <div class="container">
       <div class="row">
         <div class="span12"> &copy; 2017 - 2020 <a target="_blank" href="http://smartping.org" >SmartPing.org</a> <span style="float:right" id="verion"></span></div>
-        <!-- /span12 --> 
+        <!-- /span12 -->
       </div>
-      <!-- /row --> 
+      <!-- /row -->
     </div>
-    <!-- /container --> 
+    <!-- /container -->
   </div>
-  <!-- /footer-inner --> 
+  <!-- /footer-inner -->
 </div>
-<!-- /footer --> 
+<!-- /footer -->
 <!-- Le javascript
-================================================== --> 
+================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="assets/js/jquery-1.7.2.min.js"></script>
 <script src="assets/js/jquery.base64.js"></script>
@@ -247,6 +247,9 @@
             $(".tracertdata").append("<tr><td>"+line["Host"]+"</td><td>"+((line["Loss"]/line["Send"])*100).toFixed(2)+"</td><td>"+line["Send"]+"</td><td>"+(line["Last"]/1000000).toFixed(2)+"</td><td>"+(line["Avg"]/1000000).toFixed(2)+"</td><td>"+(line["Best"]/1000000).toFixed(2)+"</td><td>"+(line["Wrst"]/1000000).toFixed(2)+"</td><td>"+line["StDev"].toFixed(2)+"</td></tr>")
             console.log(line["Loss"])
         })
+        sour = $(d).parent().prev().prev().prev().html()
+        dest = $(d).parent().prev().html()
+        $('.mtr').html(sour + ' ==> ' + dest)
         $("#alert").modal('show');
     }
     function pageFinish(){
@@ -257,7 +260,6 @@
     }
     $(function(){
         getdata("")
-
     });
 </script>
 </body>
