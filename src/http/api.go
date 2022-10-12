@@ -70,17 +70,16 @@ func configApiRoutes() {
 			return
 		}
 		r.ParseForm()
-		if len(r.Form["ip"]) == 0 {
-			o := "Missing Param !"
-			http.Error(w, o, 406)
-			return
-		}
+		// if len(r.Form["ip"]) == 0 {
+		// 	o := "Missing Param !"
+		// 	http.Error(w, o, 406)
+		// 	return
+		// }
 		var tableip string
 		var timeStart int64
 		var timeEnd int64
 		var timeStartStr string
 		var timeEndStr string
-		tableip = r.Form["ip"][0]
 		if len(r.Form["starttime"]) > 0 && len(r.Form["endtime"]) > 0 {
 			timeStartStr = r.Form["starttime"][0]
 			if timeStartStr != "" {
@@ -111,6 +110,7 @@ func configApiRoutes() {
 		var avgdelay []string
 		var losspk []string
 		timwwnum := map[string]int{}
+		preouts := make(map[string]map[string][]string, 0)
 		for i := 0; i < cnt+1; i++ {
 			ntime := time.Unix(timeStart, 0).Format("2006-01-02 15:04")
 			timwwnum[ntime] = i
@@ -121,7 +121,13 @@ func configApiRoutes() {
 			losspk = append(losspk, "0")
 			timeStart = timeStart + 60
 		}
-		querySql := "SELECT logtime,maxdelay,mindelay,avgdelay,losspk FROM `pinglog` where target='" + tableip + "' and logtime between '" + timeStartStr + "' and '" + timeEndStr + "' "
+		var querySql string
+		if len(r.Form["ip"]) == 0 {
+			querySql = "SELECT target,logtime,maxdelay,mindelay,avgdelay,losspk FROM `pinglog` where logtime between '" + timeStartStr + "' and '" + timeEndStr + "' order by logtime "
+		} else {
+			tableip = r.Form["ip"][0]
+			querySql = "SELECT target,logtime,maxdelay,mindelay,avgdelay,losspk FROM `pinglog` where target='" + tableip + "' and logtime between '" + timeStartStr + "' and '" + timeEndStr + "'  order by logtime "
+		}
 		rows, err := g.Db.Query(querySql)
 		seelog.Debug("[func:/api/ping.json] Query ", querySql)
 		if err != nil {
@@ -129,32 +135,56 @@ func configApiRoutes() {
 		} else {
 			for rows.Next() {
 				l := new(g.PingLog)
-				err := rows.Scan(&l.Logtime, &l.Maxdelay, &l.Mindelay, &l.Avgdelay, &l.Losspk)
+				var target string
+				err := rows.Scan(&target, &l.Logtime, &l.Maxdelay, &l.Mindelay, &l.Avgdelay, &l.Losspk)
 				if err != nil {
 					seelog.Error("[/api/ping.json] Rows", err)
 					continue
 				}
+				if _, ok := preouts[target]; !ok {
+					preout := map[string][]string{
+						"lastcheck": lastcheck,
+						"maxdelay":  maxdelay,
+						"mindelay":  mindelay,
+						"avgdelay":  avgdelay,
+						"losspk":    losspk,
+					}
+					preouts[target] = preout
+				}
 				for n, v := range lastcheck {
 					if v == l.Logtime {
-						maxdelay[n] = l.Maxdelay
-						mindelay[n] = l.Mindelay
-						avgdelay[n] = l.Avgdelay
-						losspk[n] = l.Losspk
+						preouts[target]["maxdelay"][n] = l.Maxdelay
+						preouts[target]["mindelay"][n] = l.Mindelay
+						preouts[target]["avgdelay"][n] = l.Avgdelay
+						preouts[target]["losspk"][n] = l.Losspk
 						break
 					}
 				}
+				// for n, v := range lastcheck {
+				// if v == l.Logtime {
+				// maxdelay[n] = l.Maxdelay
+				// mindelay[n] = l.Mindelay
+				// avgdelay[n] = l.Avgdelay
+				// losspk[n] = l.Losspk
+				// 	break
+				// }
+				// }
 			}
 			rows.Close()
 		}
-		preout := map[string][]string{
-			"lastcheck": lastcheck,
-			"maxdelay":  maxdelay,
-			"mindelay":  mindelay,
-			"avgdelay":  avgdelay,
-			"losspk":    losspk,
-		}
+		// preout := map[string][]string{
+		// 	"lastcheck": lastcheck,
+		// 	"maxdelay":  maxdelay,
+		// 	"mindelay":  mindelay,
+		// 	"avgdelay":  avgdelay,
+		// 	"losspk":    losspk,
+		// }
 		w.Header().Set("Content-Type", "application/json")
-		RenderJson(w, preout)
+		if len(r.Form["ip"]) == 0 {
+			RenderJson(w, preouts)
+		} else {
+			RenderJson(w, preouts[tableip])
+		}
 	})
 
 	//Ping拓扑API

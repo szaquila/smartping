@@ -3,15 +3,16 @@ package funcs
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cihub/seelog"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/smartping/smartping/src/g"
-	"github.com/smartping/smartping/src/nettools"
 	"math"
 	"net"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/cihub/seelog"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/smartping/smartping/src/g"
+	"github.com/smartping/smartping/src/nettools"
 )
 
 var (
@@ -36,7 +37,7 @@ func Mapping() {
 	MapPingStorage()
 }
 
-//ping main function
+// ping main function
 func MappingTask(tel string, prov string, ips []string, wg *sync.WaitGroup) {
 	seelog.Info("Start MappingTask " + tel + " " + prov + "..")
 	statMap := []g.PingSt{}
