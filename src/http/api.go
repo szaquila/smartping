@@ -142,14 +142,13 @@ func configApiRoutes() {
 					continue
 				}
 				if _, ok := preouts[target]; !ok {
-					preout := map[string][]string{
-						"lastcheck": lastcheck,
-						"maxdelay":  maxdelay,
-						"mindelay":  mindelay,
-						"avgdelay":  avgdelay,
-						"losspk":    losspk,
+					preouts[target] = map[string][]string{
+						"lastcheck": copy_array(lastcheck),
+						"maxdelay":  copy_array(maxdelay),
+						"mindelay":  copy_array(mindelay),
+						"avgdelay":  copy_array(avgdelay),
+						"losspk":    copy_array(losspk),
 					}
-					preouts[target] = preout
 				}
 				for n, v := range lastcheck {
 					if v == l.Logtime {
@@ -1007,4 +1006,10 @@ func configApiRoutes() {
 		fmt.Fprintln(w, o)
 	})
 
+}
+
+func copy_array(src []string) []string {
+	dst := make([]string, len(src))
+	copy(dst, src)
+	return dst
 }
