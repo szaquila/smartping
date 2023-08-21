@@ -113,6 +113,7 @@
 						onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width:120px;">
 					&nbsp;<input class="sgraph" type="button" value="Submit" />
 				</div>
+				<span id="pannel-title" style="width:100%;text-align:center;display:block;">标题</span>
 				<div class="modal-body" id="pannel-show" style="width: 800px;height:500px;">
 				</div>
 			</div><!-- /.modal-content -->
@@ -187,6 +188,8 @@
 			$('#charts').modal('show').css({ "margin-left": left });
 			url = $(this).attr("apiurl");
 			$("#pannelurl").attr("value", url);
+			var title = $(this).find('b').text();
+			$('#pannel-title').text(title);
 			$.get(url).done(function (data)
 			{
 				//var data = JSON.parse(data);
