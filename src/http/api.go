@@ -394,7 +394,7 @@ func toolsHandle(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < 5; i++ {
 			wg.Add(1)
 			go func() {
-				delay, err := nettools.RunPing(ipaddr, 3*time.Second, 64, i)
+				delay, err := nettools.RunPing(g.Cfg.Addr, ipaddr, 3*time.Second, 64, i)
 				if err != nil {
 					channel <- -1.00
 				} else {

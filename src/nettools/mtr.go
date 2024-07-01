@@ -2,13 +2,14 @@ package nettools
 
 import (
 	"errors"
-	"golang.org/x/net/icmp"
-	"golang.org/x/net/ipv4"
 	"math"
 	"math/rand"
 	"net"
 	"sync"
 	"time"
+
+	"golang.org/x/net/icmp"
+	"golang.org/x/net/ipv4"
 )
 
 type Mtr struct {
@@ -22,7 +23,7 @@ type Mtr struct {
 	StDev float64
 }
 
-func RunMtr(Addr string, maxrtt time.Duration, maxttl int, maxtimeout int) ([]Mtr, error) {
+func RunMtr(SrcAddr string, Addr string, maxrtt time.Duration, maxttl int, maxtimeout int) ([]Mtr, error) {
 	result := []Mtr{}
 	Lock := sync.Mutex{}
 	var wg sync.WaitGroup
@@ -46,7 +47,7 @@ func RunMtr(Addr string, maxrtt time.Duration, maxttl int, maxtimeout int) ([]Mt
 		if nil != err {
 			return result, err
 		}
-		next := res.Send(ttl)
+		next := res.Send(SrcAddr, ttl)
 		if next.Timeout {
 			timeouts++
 		} else {
@@ -79,7 +80,7 @@ func RunMtr(Addr string, maxrtt time.Duration, maxttl int, maxtimeout int) ([]Mt
 					return
 				}
 				nowTime := time.Now()
-				next := res.Send(ittl)
+				next := res.Send(SrcAddr, ttl)
 				Lock.Lock()
 				mtr[ittl] = append(mtr[ittl], next)
 				Lock.Unlock()

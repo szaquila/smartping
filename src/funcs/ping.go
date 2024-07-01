@@ -8,6 +8,7 @@ import (
 
 	"github.com/cihub/seelog"
 	_ "github.com/mattn/go-sqlite3"
+	// _ "github.com/glebarez/sqlite"
 	"github.com/smartping/smartping/src/g"
 	"github.com/smartping/smartping/src/nettools"
 )
@@ -16,14 +17,14 @@ func Ping() {
 	var wg sync.WaitGroup
 	for _, target := range g.SelfCfg.Ping {
 		wg.Add(1)
-		go PingTask(g.Cfg.Network[target], &wg)
+		go PingTask(g.Cfg.Addr, g.Cfg.Network[target], &wg)
 	}
 	wg.Wait()
 	go StartAlert()
 }
 
 // ping main function
-func PingTask(t g.NetworkMember, wg *sync.WaitGroup) {
+func PingTask(saddr string, t g.NetworkMember, wg *sync.WaitGroup) {
 	seelog.Info("Start Ping " + t.Addr + "..")
 	stat := g.PingSt{}
 	stat.MinDelay = -1
@@ -32,7 +33,7 @@ func PingTask(t g.NetworkMember, wg *sync.WaitGroup) {
 	if err == nil {
 		for i := 0; i < 20; i++ {
 			starttime := time.Now().UnixNano()
-			delay, err := nettools.RunPing(ipaddr, 3*time.Second, 64, i)
+			delay, err := nettools.RunPing(saddr, ipaddr, 3*time.Second, 64, i)
 			if err == nil {
 				stat.AvgDelay = stat.AvgDelay + delay
 				if stat.MaxDelay < delay {

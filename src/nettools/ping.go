@@ -3,11 +3,12 @@ package nettools
 import (
 	"bytes"
 	"encoding/binary"
-	"golang.org/x/net/icmp"
-	"golang.org/x/net/ipv4"
 	"math/rand"
 	"net"
 	"time"
+
+	"golang.org/x/net/icmp"
+	"golang.org/x/net/ipv4"
 )
 
 type pkg struct {
@@ -33,10 +34,11 @@ type ICMP struct {
 	Error   error
 }
 
-func (t *pkg) Send(ttl int) ICMP {
+func (t *pkg) Send(SrcAddr string, ttl int) ICMP {
 	var hop ICMP
 	var err error
-	t.conn, err = net.ListenPacket("ip4:icmp", "0.0.0.0")
+	// t.conn, err = net.ListenPacket("ip4:icmp", "0.0.0.0")
+	t.conn, err = net.ListenPacket("ip4:icmp", SrcAddr)
 	if nil != err {
 		return hop
 	}
@@ -110,18 +112,18 @@ func (t *pkg) Send(ttl int) ICMP {
 	}
 }
 
-func RunPing(IpAddr *net.IPAddr, maxrtt time.Duration, maxttl int, seq int) (float64, error) {
+func RunPing(SrcAddr string, IpAddr *net.IPAddr, maxrtt time.Duration, maxttl int, seq int) (float64, error) {
 	var res pkg
 	var err error
 	res.dest = IpAddr
 	res.maxrtt = maxrtt
 	res.id = rand.Intn(65535)
 	res.seq = seq
-	res.msg = icmp.Message{Type: ipv4.ICMPTypeEcho, Code: 0, Body: &icmp.Echo{ID: res.id, Seq: res.seq, Data: bytes.Repeat([]byte("Go Smart Ping!"), 4) }}
+	res.msg = icmp.Message{Type: ipv4.ICMPTypeEcho, Code: 0, Body: &icmp.Echo{ID: res.id, Seq: res.seq, Data: bytes.Repeat([]byte("Go Smart Ping!"), 4)}}
 	res.netmsg, err = res.msg.Marshal(nil)
 	if nil != err {
 		return 0, err
 	}
-	pingRsult := res.Send(maxttl)
+	pingRsult := res.Send(SrcAddr, maxttl)
 	return float64(pingRsult.RTT.Nanoseconds()) / 1e6, pingRsult.Error
 }

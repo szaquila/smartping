@@ -11,6 +11,7 @@ import (
 
 	"github.com/cihub/seelog"
 	_ "github.com/mattn/go-sqlite3"
+	// _ "github.com/glebarez/sqlite"
 	"github.com/smartping/smartping/src/g"
 	"github.com/smartping/smartping/src/nettools"
 	// "github.com/xhit/go-simple-mail"
@@ -38,7 +39,7 @@ func StartAlert() {
 				l.Targetname = v["Name"]
 				l.Targetip = v["Addr"]
 				mtrString := ""
-				hops, err := nettools.RunMtr(v["Addr"], time.Second, 64, 6)
+				hops, err := nettools.RunMtr(g.Cfg.Addr, v["Addr"], time.Second, 64, 6)
 				if nil != err {
 					seelog.Error("[func:StartAlert] Traceroute error ", err)
 					mtrString = err.Error()

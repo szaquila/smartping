@@ -11,6 +11,7 @@ import (
 
 	"github.com/cihub/seelog"
 	_ "github.com/mattn/go-sqlite3"
+	// _ "github.com/glebarez/sqlite"
 	"github.com/smartping/smartping/src/g"
 	"github.com/smartping/smartping/src/nettools"
 )
@@ -49,7 +50,7 @@ func MappingTask(tel string, prov string, ips []string, wg *sync.WaitGroup) {
 				stat := g.PingSt{}
 				stat.MinDelay = -1
 				stat.LossPk = 0
-				delay, err := nettools.RunPing(ipaddr, 3*time.Second, 64, i)
+				delay, err := nettools.RunPing(g.Cfg.Addr, ipaddr, 3*time.Second, 64, i)
 				if err == nil {
 					stat.AvgDelay = stat.AvgDelay + delay
 					if stat.MaxDelay < delay {
