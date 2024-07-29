@@ -12,10 +12,16 @@ import (
 	"github.com/cihub/seelog"
 	_ "github.com/mattn/go-sqlite3"
 	// _ "github.com/glebarez/sqlite"
+	// _ "github.com/logoove/sqlite"
+	// _ "github.com/go-sqlite/sqlite3"
 	"github.com/smartping/smartping/src/g"
 	"github.com/smartping/smartping/src/nettools"
 	// "github.com/xhit/go-simple-mail"
 )
+
+type Cnt struct {
+	Cnt int
+}
 
 func StartAlert() {
 	seelog.Info("[func:StartAlert] ", "starting run AlertCheck ")
@@ -67,24 +73,21 @@ func StartAlert() {
 }
 
 func CheckAlertStatus(v map[string]string) bool {
-	type Cnt struct {
-		Cnt int
-	}
 	Thdchecksec, _ := strconv.Atoi(v["Thdchecksec"])
 	timeStartStr := time.Unix((time.Now().Unix() - int64(Thdchecksec)), 0).Format("2006-01-02 15:04")
 	querysql := "SELECT count(1) cnt FROM  `pinglog` where logtime >= '" + timeStartStr + "' and target = '" + v["Addr"] + "' and (cast(avgdelay as double) > " + v["Thdavgdelay"] + " or cast(losspk as double) > " + v["Thdloss"] + ") "
 	rows, err := g.Db.Query(querysql)
 	defer rows.Close()
-	seelog.Debug("[func:StartAlert] ", querysql)
+	seelog.Debug("[func:CheckAlertStatus] ", querysql)
 	if err != nil {
-		seelog.Error("[func:StartAlert] Query Error ", err)
+		seelog.Error("[func:CheckAlertStatus] Query Error ", err)
 		return false
 	}
 	for rows.Next() {
 		l := new(Cnt)
 		err := rows.Scan(&l.Cnt)
 		if err != nil {
-			seelog.Error("[func:StartAlert]", err)
+			// seelog.Error("[func:CheckAlertStatus]", err)
 			return false
 		}
 		Thdoccnum, _ := strconv.Atoi(v["Thdoccnum"])
@@ -98,24 +101,21 @@ func CheckAlertStatus(v map[string]string) bool {
 }
 
 func CheckDelayStatus(v map[string]string) bool {
-	type Cnt struct {
-		Cnt int
-	}
 	Thdchecksec, _ := strconv.Atoi(v["Thdchecksec"])
 	timeStartStr := time.Unix((time.Now().Unix() - int64(Thdchecksec)), 0).Format("2006-01-02 15:04")
 	thdavgdelay := 100.0
 	querysql := "SELECT avg(avgdelay) cnt FROM  `pinglog` where logtime < '" + timeStartStr + "' and target = '" + v["Addr"] + "' order by logtime desc limit 10"
 	rows, err := g.Db.Query(querysql)
 	defer rows.Close()
-	seelog.Debug("[func:StartAlert] ", querysql)
+	seelog.Debug("[func:CheckDelayStatus] ", querysql)
 	if err != nil {
-		seelog.Error("[func:StartAlert] Query Error ", err)
+		seelog.Error("[func:CheckDelayStatus] Query Error ", err)
 		return false
 	}
 	for rows.Next() {
 		err := rows.Scan(&thdavgdelay)
 		if err != nil {
-			seelog.Error("[func:StartAlert]", err)
+			seelog.Error("[func:CheckDelayStatus]", err)
 			return false
 		}
 	}
@@ -123,16 +123,16 @@ func CheckDelayStatus(v map[string]string) bool {
 	querysql = "SELECT count(1) cnt FROM  `pinglog` where logtime >= '" + timeStartStr + "' and target = '" + v["Addr"] + "' and cast(avgdelay as double) > " + fmt.Sprintf("%f", thdavgdelay*1.5)
 	rows, err = g.Db.Query(querysql)
 	// defer rows.Close()
-	seelog.Debug("[func:StartAlert] ", querysql)
+	seelog.Debug("[func:CheckDelayStatus] ", querysql)
 	if err != nil {
-		seelog.Error("[func:StartAlert] Query Error ", err)
+		seelog.Error("[func:CheckDelayStatus] Query Error ", err)
 		return false
 	}
 	for rows.Next() {
 		l := new(Cnt)
 		err := rows.Scan(&l.Cnt)
 		if err != nil {
-			seelog.Error("[func:StartAlert]", err)
+			// seelog.Error("[func:StartDelay]", err)
 			return false
 		}
 		Thdoccnum, _ := strconv.Atoi(v["Thdoccnum"])
@@ -152,7 +152,7 @@ func AlertStorage(t g.AlertLog) {
 	//g.Db.Exec(sql)
 	_, err := g.Db.Exec(sql)
 	if err != nil {
-		seelog.Error("[func:StartPing] Sql Error ", err)
+		seelog.Error("[func:AlertStorage] Sql Error ", err)
 	}
 	g.DLock.Unlock()
 	seelog.Info("[func:AlertStorage] ", "(", t.Logtime, ") AlertStorage on ", t.Targetname, " finish!")

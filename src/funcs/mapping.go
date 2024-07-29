@@ -12,6 +12,8 @@ import (
 	"github.com/cihub/seelog"
 	_ "github.com/mattn/go-sqlite3"
 	// _ "github.com/glebarez/sqlite"
+	// _ "github.com/logoove/sqlite"
+	// _ "github.com/go-sqlite/sqlite3"
 	"github.com/smartping/smartping/src/g"
 	"github.com/smartping/smartping/src/nettools"
 )

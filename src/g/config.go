@@ -106,7 +106,10 @@ func ParseConfig(ver string) {
 	seelog.Info("Config loaded")
 	Db, err = sql.Open("sqlite3", Root+"/db/database.db")
 	if err != nil {
-		log.Fatalln("[Fault]db open fail .", err)
+		Db, err = sql.Open("sqlite", Root+"/db/database.db")
+		if err != nil {
+			log.Fatalln("[Fault]db open fail .", err)
+		}
 	}
 	SelfCfg = Cfg.Network[Cfg.Addr]
 	AlertStatus = map[string]bool{}
