@@ -92,7 +92,7 @@ func Messages(toUser string, toParty string, agentId int, content, title, url st
 	if title != "" {
 		msg.Msgtype = "textcard"
 		if url == "" {
-			url = "https://cacti197.a.yjidc.com:20080/smartping/"
+			url = "http://cacti197.a.yjidc.com:8899"
 		}
 		msg.Textcard = Textcard{Title: title, Description: content, Url: url}
 	} else {
