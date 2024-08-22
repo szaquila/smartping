@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/smartping/smartping/src/g"
 	"github.com/wzv5/pping/pkg/ping"
 )
 
@@ -92,7 +93,7 @@ func Messages(toUser string, toParty string, agentId int, content, title, url st
 	if title != "" {
 		msg.Msgtype = "textcard"
 		if url == "" {
-			url = "http://cacti197.a.yjidc.com:8899"
+			url = fmt.Sprintf("http://%s:8899", g.Cfg.Addr) // "cacti197.a.yjidc.com")
 		}
 		msg.Textcard = Textcard{Title: title, Description: content, Url: url}
 	} else {
