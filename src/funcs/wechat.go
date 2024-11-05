@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -92,8 +93,11 @@ func Messages(toUser string, toParty string, agentId int, content, title, url st
 	}
 	if title != "" {
 		msg.Msgtype = "textcard"
-		if url == "" {
-			url = fmt.Sprintf("http://cacti%s.a.yjidc.com:8899", strings.Split(g.Cfg.Addr, ".")[3]) // "cacti197.a.yjidc.com")
+		if url == "" && g.Cfg.Mode["EndPoint"] != "" {
+			reg := regexp.MustCompile(`http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+:[0-9]+`)
+			url = reg.FindString(g.Cfg.Mode["EndPoint"])
+			reg2 := regexp.MustCompile(`\d+`)
+			url = strings.ReplaceAll(url, reg2.FindString(url), strings.Split(g.Cfg.Addr, ".")[3])
 		}
 		msg.Textcard = Textcard{Title: title, Description: content, Url: url}
 	} else {
