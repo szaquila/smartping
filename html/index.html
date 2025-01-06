@@ -71,10 +71,10 @@
 								</table>
 							</div>
 							<!-- /widget-content -->
-							<div class="widget-footer" style="text-align:center;padding-top:10px;">
+							<!--div class="widget-footer" style="text-align:center;padding-top:10px;">
 								<div style="display:inline;white-space:nowrap;">&nbsp;<input id="target" placeholder="节点名称或IP"
 									type="text">
-							</div>
+							</div -->
 							<div style="display:inline;white-space:nowrap;">&nbsp;<input id="target" placeholder="节点名称或IP"
 										type="text">
 								</div>
@@ -151,7 +151,12 @@
 			if (targets.length == 1 && targets[0] == "") return true;
 			return targets.some(target =>
 			{
-				return name.includes(target) || addr.includes(target);
+        if (target.startsWith("-")) {
+					tar = target.substr(1);
+					return addr.includes(tar);
+        } else {
+					return name.includes(target) || addr.includes(target);
+        }
 			});
 		}
 		function getLineChart (url)
