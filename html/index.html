@@ -65,7 +65,7 @@
 							</div>
 							<!-- /widget-header -->
 							<div class="widget-content">
-								<table class="table table-striped table-bordered">
+								<table class="table table-striped table-bordered" cellpadding="0" cellspacing="1">
 									<thead></thead>
 									<tbody class="agentlist"></tbody>
 								</table>
@@ -76,14 +76,13 @@
 									type="text">
 							</div -->
 							<div style="display:inline;white-space:nowrap;">&nbsp;<input id="target" placeholder="节点名称或IP"
-										type="text">
+										type="text" style="margin-top:10px;width:110px">&nbsp;<input class="search" type="button" value="查询"
+										onclick="getLineChart('')" style="margin-top:10px" />
 								</div>
 								<div style="display:inline;white-space:nowrap;"><b>开始:</b>&nbsp;<input id="target_starttime" type='text'
 										onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width:120px;"></div>
 								<div style="display:inline;white-space:nowrap;"><b>结束:</b>&nbsp;<input id="target_endtime" type='text'
 										onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width:120px;"></div>
-								<div style="display:inline;white-space:nowrap;">&nbsp;<input class="search" type="button" value="Submit"
-										onclick="getLineChart('')" /></div>
 							</div>
 						</div>
 					</div>
@@ -174,7 +173,7 @@
 				$.each(result["Network"], function (i, network)
 				{
 					if (network["Smartping"]) {
-						$(".agentlist").append("<tr><td style='white-space:nowrap;'><i class='alerticon-" + network["Name"] + "'></i>&nbsp;" +
+						$(".agentlist").append("<tr><td style='font-size:12px;white-space:nowrap;'><i class='alerticon-" + network["Name"] + "'></i>&nbsp;" +
 							"<a onclick=changeAgent('" + network["Name"] + "','http://" + network["Addr"] + ":" + result["Port"] + "')>" + network["Name"] + "</a></td></tr>");
 					}
 				});

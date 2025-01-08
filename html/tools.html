@@ -191,7 +191,7 @@
 				$.each(result["Network"], function (i, network)
 				{
 					if (network["Smartping"]) {
-						$(".agentlist-tools").append("<tr><td><input type='checkbox' checked></td><td v='" + network["Addr"] + ":" + result["Port"] + "'>" + network["Name"] + "</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>");
+						$(".agentlist-tools").append("<tr style='font-size:12px;white-space:nowrap;'><td><input type='checkbox' checked></td><td v='" + network["Addr"] + ":" + result["Port"] + "'>" + network["Name"] + "</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>");
 					}
 				});
 			}).fail(function (xhr, status)

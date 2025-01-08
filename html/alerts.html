@@ -214,7 +214,7 @@
 					if (network["Type"] == "To") {
 						return true
 					}
-					$(".agentlist").append("<tr><td><i class='icon-spinner icon-spin animated alerticon-" + network["Name"] + "' data-toggle='tooltip' title='' data-placement='bottom'></i>&nbsp;" + network["Name"] + "</td></tr>");
+					$(".agentlist").append("<tr><td style='font-size:12px;white-space:nowrap;'><i class='icon-spinner icon-spin animated alerticon-" + network["Name"] + "' data-toggle='tooltip' title='' data-placement='bottom'></i>&nbsp;" + network["Name"] + "</td></tr>");
 				});
 				$(".alertlist").html("");
 				$.each(FromObj, function (i, network)

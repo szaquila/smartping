@@ -140,7 +140,7 @@
             $("#verion").html("Version: " + result["Ver"])
             $.each(result["Network"], function(i, network){
                 if(network["Smartping"]) {
-                    $(".agentlist").append("<tr><td><i class='alerticon-" + network["Name"] + "'></i>&nbsp;" +
+                    $(".agentlist").append("<tr><td style='font-size:12px;white-space:nowrap;'><i class='alerticon-" + network["Name"] + "'></i>&nbsp;" +
                         "<a onclick=changeAgent('" + network["Name"] + "','http://" + network["Addr"] + ":" + result["Port"] + "')>" + network["Name"] + "</a></td></tr>");
                 }
             });
