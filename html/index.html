@@ -150,12 +150,12 @@
 			if (targets.length == 1 && targets[0] == "") return true;
 			return targets.some(target =>
 			{
-        if (target.startsWith("-")) {
-					tar = target.substr(1);
-					return addr.includes(tar);
-        } else {
-					return name.includes(target) || addr.includes(target);
-        }
+        // if (target.startsWith("-")) {
+          // tar = target.substr(1);
+          // 	return name.includes(tar) || addr.includes(tar);
+        // } else {
+					return addr.includes(target);
+        // }
 			});
 		}
 		function getLineChart (url)
