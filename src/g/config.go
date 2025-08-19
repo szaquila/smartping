@@ -108,9 +108,19 @@ func ParseConfig(ver string) {
 	if err != nil {
 		Db, err = sql.Open("sqlite", Root+"/db/database.db")
 		if err != nil {
-			log.Fatalln("[Fault]db open fail .", err)
+			log.Fatalln("[Fault]db open fail.", err)
 		}
 	}
+	// 启用WAL模式
+	_, err = Db.Exec("PRAGMA journal_mode=WAL;")
+	// 设置同步级别
+	// _, err = Db.Exec("PRAGMA synchronous=NORMAL;")
+	// 设置检查点
+	// _, err = Db.Exec("PRAGMA wal_autocheckpoint=1000;")
+	if err != nil {
+		log.Fatalln("[Fault]wal mode fail.", err)
+	}
+
 	SelfCfg = Cfg.Network[Cfg.Addr]
 	AlertStatus = map[string]bool{}
 	ToolLimit = map[string]int{}
