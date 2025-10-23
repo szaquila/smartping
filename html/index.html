@@ -215,7 +215,31 @@
 			{
 				//var data = JSON.parse(data);
 				myChart.setOption({
+					yAxis: {
+            axisTick: {
+              lineStyle: {
+                type: 'dashed' // 设置刻度线为虚线
+              }
+            },
+						splitLine: {
+              lineStyle: {
+                type: 'dashed'
+              },
+              show: true
+            }
+					},
 					xAxis: {
+            axisTick: {
+              lineStyle: {
+                type: 'dashed' // 设置刻度线为虚线
+              }
+            },
+						splitLine: {
+              lineStyle: {
+                type: 'dashed'
+              },
+              show: true
+            },
 						data: data.lastcheck
 					},
 					series: [{
@@ -246,7 +270,31 @@
 			{
 				//console.log(data)
 				myChart.setOption({
+					yAxis: {
+            axisTick: {
+              lineStyle: {
+                type: 'dashed' // 设置刻度线为虚线
+              }
+            },
+						splitLine: {
+              lineStyle: {
+                type: 'dashed'
+              },
+              show: true
+            }
+					},
 					xAxis: {
+            axisTick: {
+              lineStyle: {
+                type: 'dashed' // 设置刻度线为虚线
+              }
+            },
+						splitLine: {
+              lineStyle: {
+                type: 'dashed'
+              },
+              show: true
+            },
 						data: data.lastcheck
 					},
 					series: [{
@@ -291,10 +339,32 @@
 				trigger: 'axis'
 			},
 			xAxis: {
+        axisTick: {
+          lineStyle: {
+            type: 'dashed' // 设置刻度线为虚线
+          }
+        },
+          splitLine: {
+            lineStyle: {
+              type: 'dashed'
+            },
+            show: true
+          },
 				data: []
 			},
 			dataZoom: [{}],
 			yAxis: [{
+        axisTick: {
+          lineStyle: {
+            type: 'dashed' // 设置刻度线为虚线
+          }
+        },
+        splitLine: {
+          lineStyle: {
+            type: 'dashed'
+          },
+          show: true
+        },
 				type: 'value',
 				name: 'Delay',
 				position: 'left'
