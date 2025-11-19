@@ -1,0 +1,493 @@
+{
+  "$schema": "https://dprint.dev/schemas/v0.json", // dprint 配置文件的 JSON Schema 验证文件路径
+  "indentWidth": 2, // 缩进宽度，设置为 2 个空格 (可选值: 数字, 默认: 2)
+  "lineWidth": 200, // 行宽限制，超过此宽度的代码会自动换行 (可选值: 数字, 默认: 120)
+  "useTabs": true, // 使用制表符（Tab）而不是空格进行缩进 (可选值: true/false, 默认: false)
+  "includes": [ // 指定要格式化的文件包含模式
+    "**/*.{html,jinja2,ts,tsx,js,jsx,json,md,yml,yaml,sql,toml,py,css,scss,sass,less}" // 匹配所有支持的文件类型
+  ],
+  "excludes": [ // 指定要排除的文件或目录模式
+    "**/node_modules", // 排除 node_modules 目录
+    "**/*-lock.json", // 排除所有以 -lock.json 结尾的文件（如 package-lock.json）
+    "**/dist", // 排除构建目录
+    "**/build", // 排除构建目录
+    "**/.git" // 排除 Git 目录
+  ],
+  "plugins": [ // 配置使用的插件列表
+    "../../dprint/dprint_plugin_json.wasm", // JSON 格式化插件
+    "../../dprint/dprint_plugin_malva.wasm", // CSS/SCSS/Less 格式化插件（Malva）
+    "../../dprint/dprint_plugin_markdown.wasm", // Markdown 格式化插件
+    "../../dprint/dprint_plugin_markup.wasm", // HTML/XML/标记语言格式化插件
+    "../../dprint/dprint_plugin_ruff.wasm", // Python 格式化插件（基于 Ruff）
+    "../../dprint/dprint_plugin_sql.wasm", // SQL 格式化插件
+    "../../dprint/dprint_plugin_toml.wasm", // TOML 格式化插件
+    "../../dprint/dprint_plugin_typescript.wasm", // TypeScript/JavaScript 格式化插件
+    "../../dprint/dprint_plugin_yaml.wasm" // YAML 格式化插件
+  ],
+  "json": { // JSON 格式化配置
+    "associations": [ // JSON 文件关联模式
+      "**/*.json" // 匹配所有 JSON 文件
+    ],
+    "commentLine.forceSpaceAfterSlashes": true, // 强制在注释斜杠后添加空格 (可选值: true/false, 默认: true)
+    "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 120)
+    "newLineKind": "crlf", // 换行符类型 (可选值: "lf"/"crlf"/"cr", 默认: "lf")
+    "preferSingleLine": true, // 优先单行 (可选值: true/false, 默认: false) // 是否优先使用单行格式 (可选值: true/false, 默认: false)
+    "trailingCommas": "never", // 尾随逗号策略 (可选值: "never"/"always"/"multiLine", 默认: "never")
+    "useTabs": false, // 是否使用制表符 (可选值: true/false, 默认: false)
+  },
+  "typescript": { // TypeScript/JavaScript 格式化配置
+    "associations": [ // TypeScript/JavaScript 文件关联模式
+      "**/*.{ts,tsx,js,jsx}" // 匹配所有 TypeScript 和 JavaScript 文件
+    ],
+    /* 基础格式化配置 */
+    // "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    // "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 120)
+    // "useTabs": false, // 是否使用制表符 (可选值: true/false, 默认: false)
+    // "newLineKind": "crlf", // 换行符类型 (可选值: "lf"/"crlf"/"cr", 默认: "lf")
+    // "quoteStyle": "alwaysDouble", // 引号风格 (可选值: "alwaysDouble"/"alwaysSingle"/"preserve", 默认: "alwaysDouble")
+    // "quoteProps": "preserve", // 属性引号策略 (可选值: "as-needed"/"preserve"/"always", 默认: "as-needed")
+    // "semiColons": "prefer", // 分号策略 (可选值: "prefer"/"never"/"asi", 默认: "prefer")
+    // "fileIndentLevel": 0, // 文件缩进级别 (可选值: 数字, 默认: 0)
+
+    /* 箭头函数配置 */
+    // "arrowFunction.useParentheses": "maintain", // 箭头函数括号使用 (可选值: "force"/"prefer"/"maintain", 默认: "maintain")
+    // "arrowFunction.bracePosition": "sameLineUnlessHanging", // 箭头函数大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+
+    /* 表达式配置 */
+    // "binaryExpression.linePerExpression": false, // 二元表达式每行一个 (可选值: true/false, 默认: false)
+    // "binaryExpression.preferSingleLine": true, // 二元表达式优先单行 (可选值: true/false, 默认: false)
+    // "binaryExpression.operatorPosition": "sameLine", // 二元表达式操作符位置 (可选值: "sameLine"/"nextLine", 默认: "sameLine")
+    // "binaryExpression.spaceSurroundingBitwiseAndArithmeticOperator": true, // 二元表达式位运算和算术运算符周围空格 (可选值: true/false, 默认: true)
+    // "conditionalExpression.linePerExpression": false, // 条件表达式每行一个 (可选值: true/false, 默认: false)
+    // "conditionalExpression.preferSingleLine": true, // 条件表达式优先单行 (可选值: true/false, 默认: false)
+    // "conditionalExpression.operatorPosition": "sameLine", // 条件表达式操作符位置 (可选值: "sameLine"/"nextLine", 默认: "sameLine")
+    // "conditionalType.operatorPosition": "sameLine", // 条件类型操作符位置 (可选值: "sameLine"/"nextLine", 默认: "sameLine")
+
+    /* JSX 配置 */
+    // "jsx.quoteStyle": "preferDouble", // JSX 引号风格 (可选值: "preferDouble"/"preferSingle"/"preserve", 默认: "preferDouble")
+    // "jsx.multiLineParens": "prefer", // JSX 多行括号 (可选值: "prefer"/"force"/"never", 默认: "prefer")
+    // "jsx.forceNewLinesSurroundingContent": false, // 强制 JSX 内容周围换行 (可选值: true/false, 默认: false)
+    // "jsxOpeningElement.bracketPosition": "nextLine", // JSX 开始元素括号位置 (可选值: "sameLine"/"nextLine", 默认: "nextLine")
+    // "jsxSelfClosingElement.bracketPosition": "nextLine", // JSX 自闭合元素括号位置 (可选值: "sameLine"/"nextLine", 默认: "nextLine")
+    // "jsxAttributes.preferHanging": false, // JSX 属性优先悬挂 (可选值: true/false, 默认: false)
+    // "jsxAttributes.preferSingleLine": true, // JSX 属性优先单行 (可选值: true/false, 默认: false)
+    // "jsxElement.preferSingleLine": true, // JSX 元素优先单行 (可选值: true/false, 默认: false)
+
+    /* 成员表达式配置 */
+    // "memberExpression.linePerExpression": false, // 成员表达式每行一个 (可选值: true/false, 默认: false)
+    // "memberExpression.preferSingleLine": true, // 成员表达式优先单行 (可选值: true/false, 默认: false)
+
+    /* 类型字面量配置 */
+    // "typeLiteral.separatorKind.singleLine": "semiColon", // 单行类型字面量分隔符 (可选值: "comma"/"semiColon", 默认: "semiColon")
+    // "typeLiteral.separatorKind.multiLine": "semiColon", // 多行类型字面量分隔符 (可选值: "comma"/"semiColon", 默认: "semiColon")
+    // "typeLiteral.preferHanging": false, // 类型字面量优先悬挂 (可选值: true/false, 默认: false)
+    // "typeLiteral.preferSingleLine": true, // 类型字面量优先单行 (可选值: true/false, 默认: false)
+    // "typeLiteral.spaceSurroundingProperties": true, // 类型字面量属性周围空格 (可选值: true/false, 默认: false)
+
+    /* 参数和参数配置 */
+    // "arguments.preferHanging": "onlySingleItem", // 参数优先悬挂 (可选值: "never"/"onlySingleItem"/"always", 默认: onlySingleItem)
+    // "arguments.preferSingleLine": true, // 参数优先单行 (可选值: true/false, 默认: false)
+    // "arguments.spaceAround": false, // 参数周围空格 (可选值: true/false, 默认: false)
+    // "arguments.trailingCommas": "onlyMultiLine", // 参数尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "parameters.preferHanging": "onlySingleItem", // 参数优先悬挂 (可选值: "never"/"onlySingleItem"/"always", 默认: onlySingleItem)
+    // "parameters.preferSingleLine": true, // 参数优先单行 (可选值: true/false, 默认: false)
+    // "parameters.spaceAround": false, // 参数周围空格 (可选值: true/false, 默认: false)
+    // "parameters.trailingCommas": "onlyMultiLine", // 参数尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "typeParameters.preferHanging": "onlySingleItem", // 类型参数优先悬挂 (可选值: "never"/"onlySingleItem"/"always", 默认: onlySingleItem)
+    // "typeParameters.preferSingleLine": true, // 类型参数优先单行 (可选值: true/false, 默认: false)
+    // "typeParameters.trailingCommas": "onlyMultiLine", // 类型参数尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+
+    /* 数组配置 */
+    // "arrayExpression.preferHanging": "onlySingleItem", // 数组表达式优先悬挂 (可选值: "never"/"onlySingleItem"/"always", 默认: onlySingleItem)
+    // "arrayExpression.preferSingleLine": true, // 数组表达式优先单行 (可选值: true/false, 默认: false)
+    // "arrayExpression.spaceAround": false, // 数组表达式周围空格 (可选值: true/false, 默认: false)
+    // "arrayExpression.trailingCommas": "onlyMultiLine", // 数组表达式尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "arrayPattern.preferHanging": false, // 数组模式优先悬挂 (可选值: true/false, 默认: false)
+    // "arrayPattern.preferSingleLine": true, // 数组模式优先单行 (可选值: true/false, 默认: false)
+    // "arrayPattern.spaceAround": false, // 数组模式周围空格 (可选值: true/false, 默认: false)
+    // "arrayPattern.trailingCommas": "onlyMultiLine", // 数组模式尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+
+    /* 对象配置 */
+    // "objectExpression.preferHanging": false, // 对象表达式优先悬挂 (可选值: true/false, 默认: false)
+    // "objectExpression.preferSingleLine": true, // 对象表达式优先单行 (可选值: true/false, 默认: false)
+    // "objectExpression.spaceSurroundingProperties": true, // 对象表达式属性周围空格 (可选值: true/false, 默认: false)
+    // "objectExpression.trailingCommas": "onlyMultiLine", // 对象表达式尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "objectPattern.preferHanging": false, // 对象模式优先悬挂 (可选值: true/false, 默认: false)
+    // "objectPattern.preferSingleLine": true, // 对象模式优先单行 (可选值: true/false, 默认: false)
+    // "objectPattern.spaceSurroundingProperties": true, // 对象模式属性周围空格 (可选值: true/false, 默认: false)
+    // "objectPattern.trailingCommas": "onlyMultiLine", // 对象模式尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "spaceSurroundingProperties": true, // 属性周围空格 (可选值: true/false, 默认: false)
+
+    /* 括号配置 */
+    // "parentheses.preferSingleLine": true, // 括号优先单行 (可选值: true/false, 默认: false)
+    // "parenExpression.spaceAround": false, // 括号表达式周围空格 (可选值: true/false, 默认: false)
+
+    /* 元组配置 */
+    // "tupleType.preferHanging": "onlySingleItem", // 元组类型优先悬挂 (可选值: "never"/"onlySingleItem"/"always", 默认: onlySingleItem)
+    // "tupleType.preferSingleLine": true, // 元组类型优先单行 (可选值: true/false, 默认: false)
+    // "tupleType.spaceAround": false, // 元组类型周围空格 (可选值: true/false, 默认: false)
+    // "tupleType.trailingCommas": "onlyMultiLine", // 元组类型尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+
+    /* 联合和交集类型配置 */
+    // "unionAndIntersectionType.preferHanging": false, // 联合和交集类型优先悬挂 (可选值: true/false, 默认: false)
+    // "unionAndIntersectionType.preferSingleLine": true, // 联合和交集类型优先单行 (可选值: true/false, 默认: false)
+
+    /* 语句配置 */
+    // "ifStatement.bracePosition": "sameLineUnlessHanging", // if 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "ifStatement.useBraces": "maintain", // if 语句使用大括号 (可选值: "preferNone"/"always"/"maintain", 默认: "maintain")
+    // "ifStatement.preferHanging": false, // if 语句优先悬挂 (可选值: true/false, 默认: false)
+
+    // "ifStatement.singleBodyPosition": "maintain", // if 语句单行体位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "maintain")
+    // "ifStatement.nextControlFlowPosition": "sameLine", // if 语句下一个控制流位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "sameLine")
+    // "ifStatement.spaceAround": false, // if 语句周围空格 (可选值: true/false, 默认: false)
+    // "ifStatement.spaceAfterIfKeyword": true, // if 关键字后空格 (可选值: true/false, 默认: true)
+
+    /* 循环语句配置 */
+    // "forStatement.bracePosition": "sameLineUnlessHanging", // for 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "forStatement.useBraces": "always", // for 语句使用大括号 (可选值: "preferNone"/"always"/"maintain", 默认: "maintain")
+    // "forStatement.preferHanging": false, // for 语句优先悬挂 (可选值: true/false, 默认: false)
+    // "forStatement.preferSingleLine": true, // for 语句优先单行 (可选值: true/false, 默认: false)
+    // "forStatement.singleBodyPosition": "maintain", // for 语句单行体位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "maintain")
+    // "forStatement.spaceAround": false, // for 语句周围空格 (可选值: true/false, 默认: false)
+    // "forStatement.spaceAfterForKeyword": true, // for 关键字后空格 (可选值: true/false, 默认: true)
+    // "forStatement.spaceAfterSemiColons": true, // for 语句分号后空格 (可选值: true/false, 默认: true)
+
+    // "forInStatement.bracePosition": "sameLineUnlessHanging", // for...in 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "forInStatement.useBraces": "maintain", // for...in 语句使用大括号 (可选值: "preferNone"/"always"/"maintain", 默认: "maintain")
+    // "forInStatement.preferHanging": false, // for...in 语句优先悬挂 (可选值: true/false, 默认: false)
+    // "forInStatement.singleBodyPosition": "maintain", // for...in 语句单行体位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "maintain")
+    // "forInStatement.spaceAround": false, // for...in 语句周围空格 (可选值: true/false, 默认: false)
+    // "forInStatement.spaceAfterForKeyword": true, // for...in 语句 for 关键字后空格 (可选值: true/false, 默认: true)
+
+    // "forOfStatement.bracePosition": "sameLineUnlessHanging", // for...of 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "forOfStatement.useBraces": "maintain", // for...of 语句使用大括号 (可选值: "preferNone"/"always"/"maintain", 默认: "maintain")
+    // "forOfStatement.preferHanging": false, // for...of 语句优先悬挂 (可选值: true/false, 默认: false)
+    // "forOfStatement.singleBodyPosition": "maintain", // for...of 语句单行体位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "maintain")
+    // "forOfStatement.spaceAround": false, // for...of 语句周围空格 (可选值: true/false, 默认: false)
+    // "forOfStatement.spaceAfterForKeyword": true, // for...of 语句 for 关键字后空格 (可选值: true/false, 默认: true)
+
+    // "whileStatement.bracePosition": "sameLineUnlessHanging", // while 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "whileStatement.useBraces": "maintain", // while 语句使用大括号 (可选值: "preferNone"/"always"/"maintain", 默认: "maintain")
+    // "whileStatement.preferHanging": false, // while 语句优先悬挂 (可选值: true/false, 默认: false)
+    // "whileStatement.singleBodyPosition": "maintain", // while 语句单行体位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "maintain")
+    // "whileStatement.spaceAround": false, // while 语句周围空格 (可选值: true/false, 默认: false)
+    // "whileStatement.spaceAfterWhileKeyword": true, // while 关键字后空格 (可选值: true/false, 默认: true)
+
+    // "doWhileStatement.bracePosition": "sameLineUnlessHanging", // do...while 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "doWhileStatement.preferHanging": false, // do...while 语句优先悬挂 (可选值: true/false, 默认: false)
+    // "doWhileStatement.spaceAround": false, // do...while 语句周围空格 (可选值: true/false, 默认: false)
+    // "doWhileStatement.spaceAfterWhileKeyword": true, // do...while 语句 while 关键字后空格 (可选值: true/false, 默认: true)
+    // "doWhileStatement.nextControlFlowPosition": "sameLine", // do...while 语句下一个控制流位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "sameLine")
+
+    /* 函数配置 */
+    // "functionDeclaration.bracePosition": "sameLineUnlessHanging", // 函数声明大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "functionExpression.bracePosition": "sameLineUnlessHanging", // 函数表达式大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "functionDeclaration.spaceBeforeParentheses": false, // 函数声明括号前空格 (可选值: true/false, 默认: false)
+    // "functionExpression.spaceBeforeParentheses": false, // 函数表达式括号前空格 (可选值: true/false, 默认: false)
+    // "functionExpression.spaceAfterFunctionKeyword": false, // 函数表达式 function 关键字后空格 (可选值: true/false, 默认: true)
+
+    /* 类配置 */
+    // "classDeclaration.bracePosition": "sameLineUnlessHanging", // 类声明大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "classExpression.bracePosition": "sameLineUnlessHanging", // 类表达式大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+
+    /* 枚举配置 */
+    // "enumDeclaration.bracePosition": "sameLineUnlessHanging", // 枚举声明大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "enumDeclaration.memberSpacing": "maintain", // 枚举成员间距 (可选值: "maintain"/"newLines", 默认: "maintain")
+    // "enumDeclaration.trailingCommas": "onlyMultiLine", // 枚举声明尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+
+    /* 构造函数配置 */
+    // "constructor.bracePosition": "sameLineUnlessHanging", // 构造函数大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "constructor.spaceBeforeParentheses": false, // 构造函数括号前空格 (可选值: true/false, 默认: false)
+    // "constructSignature.spaceAfterNewKeyword": false, // 构造签名 new 关键字后空格 (可选值: true/false, 默认: false)
+    // "constructorType.spaceAfterNewKeyword": false, // 构造函数类型 new 关键字后空格 (可选值: true/false, 默认: false)
+
+    /* 访问器配置 */
+    // "getAccessor.bracePosition": "sameLineUnlessHanging", // get 访问器大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "getAccessor.spaceBeforeParentheses": false, // get 访问器括号前空格 (可选值: true/false, 默认: false)
+    // "setAccessor.bracePosition": "sameLineUnlessHanging", // set 访问器大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "setAccessor.spaceBeforeParentheses": false, // set 访问器括号前空格 (可选值: true/false, 默认: false)
+    // "method.bracePosition": "sameLineUnlessHanging", // 方法大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "method.spaceBeforeParentheses": false, // 方法括号前空格 (可选值: true/false, 默认: false)
+
+    /* 模块配置 */
+    // "moduleDeclaration.bracePosition": "sameLineUnlessHanging", // 模块声明大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+
+    /* 接口和类型配置 */
+    // "interfaceDeclaration.bracePosition": "sameLineUnlessHanging", // 接口声明大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "mappedType.preferSingleLine": true, // 映射类型优先单行 (可选值: true/false, 默认: false)
+
+    /* 控制流配置 */
+    // "switchStatement.bracePosition": "sameLineUnlessHanging", // switch 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "switchCase.bracePosition": "sameLineUnlessHanging", // switch case 大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "switchStatement.preferHanging": false, // switch 语句优先悬挂 (可选值: true/false, 默认: false)
+    // "switchStatement.spaceAround": false, // switch 语句周围空格 (可选值: true/false, 默认: false)
+
+    // "tryStatement.bracePosition": "sameLineUnlessHanging", // try 语句大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+    // "tryStatement.nextControlFlowPosition": "sameLine", // try 语句下一个控制流位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "sameLine")
+    // "catchClause.spaceAround": false, // catch 子句周围空格 (可选值: true/false, 默认: false)
+
+    /* 静态块配置 */
+    // "staticBlock.bracePosition": "sameLineUnlessHanging", // 静态块大括号位置 (可选值: "sameLine"/"nextLine"/"sameLineUnlessHanging", 默认: "sameLineUnlessHanging")
+
+    /* 导入导出配置 */
+    // "importDeclaration.preferHanging": false, // 导入声明优先悬挂 (可选值: true/false, 默认: false)
+    // "importDeclaration.preferSingleLine": true, // 导入声明优先单行 (可选值: true/false, 默认: false)
+    // "importDeclaration.forceSingleLine": false, // 导入声明强制单行 (可选值: true/false, 默认: false)
+    // "importDeclaration.forceMultiLine": "never", // 导入声明强制多行 (可选值: "never"/"always"/"withInterface", 默认: "never")
+    // "importDeclaration.spaceSurroundingNamedImports": true, // 导入声明命名导入周围空格 (可选值: true/false, 默认: false)
+    // "importDeclaration.trailingCommas": "onlyMultiLine", // 导入声明尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "importDeclaration.sortNamedImports": "caseInsensitive", // 命名导入排序 (可选值: "caseInsensitive"/"caseSensitive"/"off", 默认: "off")
+    // "importDeclaration.sortTypeOnlyImports": null, // 仅类型导入排序 (可选值: "first"/"last"/null, 默认: null)
+    // "module.sortImportDeclarations": "caseInsensitive", // 模块导入声明排序 (可选值: "caseInsensitive"/"caseSensitive"/"off", 默认: "off")
+
+    // "exportDeclaration.preferHanging": false, // 导出声明优先悬挂 (可选值: true/false, 默认: false)
+    // "exportDeclaration.preferSingleLine": true, // 导出声明优先单行 (可选值: true/false, 默认: false)
+    // "exportDeclaration.forceSingleLine": false, // 导出声明强制单行 (可选值: true/false, 默认: false)
+    // "exportDeclaration.forceMultiLine": "never", // 导出声明强制多行 (可选值: "never"/"always", 默认: "never")
+    // "exportDeclaration.spaceSurroundingNamedExports": true, // 导出声明命名导出周围空格 (可选值: true/false, 默认: false)
+    // "exportDeclaration.trailingCommas": "onlyMultiLine", // 导出声明尾随逗号 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "exportDeclaration.sortNamedExports": "caseInsensitive", // 命名导出排序 (可选值: "caseInsensitive"/"caseSensitive"/"off", 默认: "off")
+    // "exportDeclaration.sortTypeOnlyExports": null, // 仅类型导出排序  (可选值: "first"/"last"/null, 默认: null)
+    // "module.sortExportDeclarations": "caseInsensitive", // 模块导出声明排序 (可选值: "caseInsensitive"/"caseSensitive"/"off", 默认: "off")
+
+    /* 其他配置 */
+    // "variableStatement.preferHanging": false, // 变量语句优先悬挂 (可选值: true/false, 默认: false)
+    // "variableStatement.preferSingleLine": true, // 变量语句优先单行 (可选值: true/false, 默认: false)
+    // "computed.preferSingleLine": true, // 计算属性优先单行 (可选值: true/false, 默认: false)
+    // "decorators.preferSingleLine": true, // 装饰器优先单行 (可选值: true/false, 默认: false)
+
+    /* extends 子句配置 */
+    // "extendsClause.preferHanging": false, // extends 子句优先悬挂 (可选值: true/false, 默认: false)
+    // "implementsClause.preferHanging": false, // implements 子句优先悬挂 (可选值: true/false, 默认: false)
+
+    /* JSX 表达式容器配置 */
+    // "jsxExpressionContainer.spaceSurroundingExpression": false, // JSX 表达式容器表达式周围空格 (可选值: true/false, 默认: false)
+    // "jsxSelfClosingElement.spaceBeforeSlash": false, // JSX 自闭合元素斜杠前空格 (可选值: true/false, 默认: false)
+
+    /* 标签模板配置 */
+    // "taggedTemplate.spaceBeforeLiteral": false, // 标签模板字面量前空格 (可选值: true/false, 默认: false)
+
+    /* 类型注解配置 */
+    // "typeAnnotation.spaceBeforeColon": true, // 类型注解冒号前空格 (可选值: true/false, 默认: true)
+    // "typeAssertion.spaceBeforeExpression": true, // 类型断言表达式前空格 (可选值: true/false, 默认: true)
+
+    /* 注释配置 */
+    // "commentLine.forceSpaceAfterSlashes": true, // 注释斜杠后强制空格 (可选值: true/false, 默认: true)
+    // "ignoreNodeCommentText": "dprint-ignore", // 忽略节点注释文本 (可选值: 字符串, 默认: "dprint-ignore")
+    // "ignoreFileCommentText": "dprint-ignore-file", // 忽略文件注释文本 (可选值: 字符串, 默认: "dprint-ignore-file")
+
+    /* 换行和缩进控制 */
+    // "nextControlFlowPosition": "sameLine", // 下一个控制流位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "sameLine")
+    // "singleBodyPosition": "maintain", // 单行语句体位置 (可选值: "sameLine"/"nextLine"/"maintain", 默认: "maintain")
+    // "operatorPosition": "sameLine", // 操作符位置 (可选值: "sameLine"/"nextLine", 默认: "sameLine")
+    // "preferHanging": false, // 是否优先悬挂式缩进 (可选值: true/false, 默认: false)
+    // "preferSingleLine": true, // 是否优先单行格式 (可选值: true/false, 默认: false)
+    // "spaceAround": false, // 运算符周围空格 (可选值: true/false, 默认: false)
+    // "trailingCommas": "onlyMultiLine", // 尾随逗号策略 (可选值: "never"/"onlyMultiLine"/"always", 默认: "onlyMultiLine")
+    // "useBraces": "always" // 大括号使用策略 (可选值: "preferNone"/"always"/"maintain", 默认: "preferAlways")
+  },
+  "malva": { // CSS/SCSS/Less 格式化配置（Malva 插件）
+    "associations": [ // CSS 文件关联模式
+      "**/*.{css,scss,sass,less}" // 匹配所有 CSS 样式文件
+    ],
+    "alignComments": true, // 对齐注释 (可选值: true/false, 默认: true)
+    "attrValueQuotes": "always", // 属性值引号 (可选值: "always"/"as-needed"/"preserve", 默认: "always")
+    "blockSelectorLinebreak": "consistent", // 块选择器换行 (可选值: "consistent"/"always"/"never", 默认: "consistent")
+    "declarationOrder": "smacss", // 声明排序 (可选值: "smacss"/"concentric"/"alphabetical", 默认: null)
+    "declarationOrderGroupBy": "nonDeclaration", // 声明排序分组 (可选值: "nonDeclaration"/"property"/"none", 默认: "nonDeclaration")
+    "formatComments": false, // 格式化注释 (可选值: true/false, 默认: false)
+    "hexCase": "upper", // 十六进制颜色大小写 (可选值: "upper"/"lower", 默认: "lower")
+    "hexColorLength": "long", // 十六进制颜色长度 (可选值: "long"/"short", 默认: "long")
+    "ignoreCommentDirective": "malva-ignore", // 忽略注释指令 (可选值: 字符串, 默认: "malva-ignore")
+    "ignoreFileCommentDirective": "malva-ignore-file", // 忽略文件注释指令 (可选值: 字符串, 默认: "malva-ignore-file")
+    "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    "keyframeSelectorNotation": null, // 关键帧选择器表示法 (可选值: "from-to"/"percentage"/null, 默认: null)
+    "linebreakInPseudoParens": true, // 伪类括号内换行 (可选值: true/false, 默认: false)
+    "omitNumberLeadingZero": false, // 省略数字前导零 (可选值: true/false, 默认: false)
+    "operatorLinebreak": "after", // 操作符换行 (可选值: "before"/"after"/"consistent", 默认: "after")
+    "preferSingleLine": true, // 优先单行 (可选值: true/false, 默认: false)
+    "printWidth": 200, // 行宽限制 (可选值: 数字, 默认: 0)
+    "quotes": "preferDouble", // 引号偏好 (可选值: "preferDouble"/"preferSingle"/"preserve", 默认: "preferDouble")
+    "selectorOverrideCommentDirective": "malva-selector-override", // 选择器覆盖注释指令 (可选值: 字符串, 默认: "malva-selector-override")
+    "singleLineBlockThreshold": null, // 单行块阈值 (可选值: 数字/null, 默认: null)
+    "singleLineTopLevelDeclarations": false, // 顶级声明单行 (可选值: true/false, 默认: false)
+    "trailingComma": false, // 尾随逗号 (可选值: true/false, 默认: false)
+    "useTabs": true, // 是否使用制表符 (可选值: true/false, 默认: false)
+  },
+  "markup": { // HTML/XML/标记语言格式化配置
+    "associations": [ // 标记语言文件关联模式
+      "**/*.html", // 匹配所有 HTML 文件
+      "**/*.xml", // 匹配所有 XML 文件
+      "**/*.vue", // 匹配所有 Vue 文件
+      "**/*.svelte", // 匹配所有 Svelte 文件
+      "**/*.astro", // 匹配所有 Astro 文件
+      "**/*.jinja", // 匹配所有 Jinja 文件
+      "**/*.jinja2", // 匹配所有 Jinja2 文件
+      "**/*.twig", // 匹配所有 Twig 文件
+      "**/*.nunjucks", // 匹配所有 Nunjucks 文件
+      "**/*.vento" // 匹配所有 Vento 文件
+    ],
+    // "angularNextControlFlowSameLine": true, // Angular 控制流结构在同一行 (可选值: true/false, 默认: true)
+    // "astroAttrShorthand": null, // Astro 属性简写保持默认 (可选值: true/false/null, 默认: null)
+    // "closingBracketSameLine": true, // 闭合括号在同一行 (可选值: true/false, 默认: true)
+    // "closingTagLineBreakForEmpty": "never", // 空元素闭合标签永不换行 (可选值: "never"/"always", 默认: "never")
+    // "component.selfClosing": true, // 组件使用自闭合标签 (可选值: true/false, 默认: true)
+    // "formatComments": false, // 格式化注释 (可选值: true/false, 默认: false) // 不格式化注释 (可选值: true/false, 默认: false)
+    // "html.normal.selfClosing": true, // 普通 HTML 元素使用自闭合标签 (可选值: true/false, 默认: false)
+    // "html.scriptIndent": true, // HTML script 标签内容缩进 (可选值: true/false, 默认: true)
+    // "html.styleIndent": true, // HTML style 标签内容缩进 (可选值: true/false, 默认: true)
+    // "html.void.selfClosing": true, // HTML void 元素使用自闭合标签 (可选值: true/false, 默认: false)
+    // "ignoreCommentDirective": "markup-fmt-ignore", // 忽略注释指令 (可选值: 字符串, 默认: "markup-fmt-ignore")
+    // "ignoreFileCommentDirective": "markup-fmt-ignore-file", // 忽略文件注释指令 (可选值: 字符串, 默认: "markup-fmt-ignore-file")
+    // "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    // "mathml.selfClosing": true, // MATHML 使用自闭合标签 (可选值: true/false, 默认: true)
+    // "maxAttrsPerLine": null, // 每行最大属性数不限制 (可选值: 数字/null, 默认: null)
+    // "preferAttrsSingleLine": true, // 优先将属性放在单行 (可选值: true/false, 默认: true)
+    // "printWidth": 200, // 打印宽度限制为 200 字符 (可选值: 数字, 默认: 120)
+    // "scriptFormatter": "dprint", // 使用 dprint 格式化脚本 (可选值: "dprint"/"prettier"/"none", 默认: "dprint")
+    // "singleAttrSameLine": true, // 单个属性与标签在同一行 (可选值: true/false, 默认: true)
+    // "strictSvelteAttr": false, // 不严格处理 Svelte 属性 (可选值: true/false, 默认: false)
+    // "svelte.scriptIndent": true, // Svelte script 标签内容缩进 (可选值: true/false, 默认: true)
+    // "svelteDirectiveShorthand": null, // Svelte 指令简写保持默认 (可选值: true/false/null, 默认: null)
+    // "svg.selfClosing": true, // SVG 元素使用自闭合标签 (可选值: true/false, 默认: false)
+    // "useTabs": true, // 是否使用制表符 (可选值: true/false, 默认: false)
+    // "vBindStyle": "short", // Vue v-bind 使用简写形式（:） (可选值: "short"/"long"/"preserve", 默认: "short")
+    // "vForDelimiterStyle": "in", // Vue v-for 使用 in 分隔符 (可选值: "in"/"of"/"preserve", 默认: "in")
+    // "vOnStyle": "short", // Vue v-on 使用简写形式（@） (可选值: "short"/"long"/"preserve", 默认: "short")
+    // "vSlotStyle": "short", // Vue v-slot 使用简写形式（#） (可选值: "short"/"long"/"preserve", 默认: "short")
+    // "vue.scriptIndent": true, // Vue script 标签内容缩进 (可选值: true/false, 默认: true)
+    // "vue.styleIndent": true, // Vue style 标签内容缩进 (可选值: true/false, 默认: true)
+  },
+  "markdown": { // Markdown 格式化配置
+    "associations": [ // Markdown 文件关联模式
+      "**/*.md", // 匹配所有 Markdown 文件
+      "**/*.markdown" // 匹配所有 Markdown 文件
+    ],
+    "codeBlockStyle": "fenced", // 代码块样式 (可选值: "fenced"/"indented"/"preserve", 默认: "fenced")
+    "emphasisKind": "underscores", // 强调标记类型 (可选值: "underscores"/"asterisks"/"preserve", 默认: "underscores")
+    "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 120)
+    "listItemIndent": "one", // 列表项缩进 (可选值: "one"/"zero"/"preserve", 默认: "one")
+    "newLineKind": "crlf", // 换行符类型 (可选值: "lf"/"crlf"/"cr", 默认: "lf")
+    "quoteKind": "preserve", // 引号类型 (可选值: "double"/"single"/"preserve", 默认: "preserve")
+    "strongKind": "asterisks", // 粗体标记类型 (可选值: "underscores"/"asterisks"/"preserve", 默认: "asterisks")
+    "textWrap": "always", // 文本换行 (可选值: "always"/"never"/"preserve", 默认: "always")
+    "useTabs": true, // 是否使用制表符 (可选值: true/false, 默认: false)
+  },
+  "yaml": { // YAML 格式化配置
+    "associations": [ // YAML 文件关联模式
+      "**/*.yml", // 匹配所有 YAML 文件
+      "**/*.yaml" // 匹配所有 YAML 文件
+    ],
+    "allowWithoutQuotes": true, // 是否允许不带引号 (可选值: true/false, 默认: true)
+    "bracketSpacing": true, // 括号间距 (可选值: true/false, 默认: true),
+    "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 120)
+    "newLineKind": "crlf", // 换行符类型 (可选值: "lf"/"crlf"/"cr", 默认: "lf")
+    "propsNaming": "preserve", // 属性命名 (可选值: "camel"/"snake"/"pascal"/"preserve", 默认: "preserve")
+    "quoteSingleQuotes": false, // 是否为单引号添加引号 (可选值: true/false, 默认: false)
+    "quoteStyle": "single", // 引号风格 (可选值: "single"/"double"/"preserve", 默认: "single")
+    "trimTrailingWhitespace": true, // 是否修剪尾随空格 (可选值: true/false, 默认: true)
+    "useTabs": false, // 是否使用制表符 (可选值: true/false, 默认: false)
+  },
+  "sql": { // SQL 格式化配置
+    "associations": [ // SQL 文件关联模式
+      "**/*.sql", // 匹配所有 SQL 文件
+      "**/*.ddl", // 匹配所有 DDL 文件
+      "**/*.dml" // 匹配所有 DML 文件
+    ],
+    "alignValues": true, // 对齐值 (可选值: true/false, 默认: false)
+    "alignWhere": false, // 对齐 WHERE 子句 (可选值: true/false, 默认: false)
+    "commaPosition": "before", // 逗号位置 (可选值: "before"/"after", 默认: "after")
+    "dataTypeCase": "lower", // 数据类型大小写 (可选值: "upper"/"lower"/"preserve", 默认: "lower")
+    "expressionWidth": "multiple", // 表达式宽度 (可选值: "single"/"multiple", 默认: "multiple")
+    "functionCase": "preserve", // 函数名大小写 (可选值: "upper"/"lower"/"preserve", 默认: "preserve")
+    "identifierCase": "preserve", // 标识符大小写 (可选值: "upper"/"lower"/"preserve", 默认: "preserve")
+    "indentStyle": "standard", // 缩进样式 (可选值: "standard"/"tabularLeft"/"tabularRight", 默认: "standard")
+    "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    "keywordCase": "upper", // 关键字大小写 (可选值: "upper"/"lower"/"preserve", 默认: "upper")
+    "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 120)
+    "multilineLists": "always", // 多行列表 (可选值: "always"/"never"/"oneline", 默认: "always")
+    "newlineClause": true, // 子句换行 (可选值: true/false, 默认: true)
+    "useTabs": false, // 是否使用制表符 (可选值: true/false, 默认: false)
+  },
+  "toml": { // TOML 格式化配置
+    "associations": [ // TOML 文件关联模式
+      "**/*.toml", // 匹配所有 TOML 文件
+      "**/Cargo.toml", // 匹配 Cargo.toml 文件
+      "**/pyproject.toml" // 匹配 pyproject.toml 文件
+    ],
+    "allowedBlankLines": 1, // 允许空行数 (可选值: 数字, 默认: 1)
+    "arrayTrailingComma": "never", // 数组尾随逗号 (可选值: "never"/"always"/"multiLine", 默认: "never")
+    "commentLine.forceSpaceAfterSlashes": true, // 强制在注释斜杠后添加空格 (可选值: true/false, 默认: true)
+    "compactInlineTables": false, // 紧凑内联表 (可选值: true/false, 默认: false)
+    "crlf": false, // 使用 CRLF 换行符 (可选值: true/false, 默认: false)
+    "indentTables": false, // 缩进表 (可选值: true/false, 默认: false)
+    "indentWidth": 2, // 缩进宽度 (可选值: 数字, 默认: 2)
+    "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 120)
+    "newLineKind": "crlf", // 换行符类型 (可选值: "lf"/"crlf"/"cr", 默认: "lf")
+    "reorderKeys": false, // 重新排序键 (可选值: true/false, 默认: false)
+    "useTabs": false, // 是否使用制表符 (可选值: true/false, 默认: false)
+  },
+  "ruff": { // Python 格式化配置（基于 Ruff）
+    "associations": [ // Python 文件关联模式
+      "**/*.py", // 匹配所有 Python 文件
+      "**/*.pyi", // 匹配所有 Python 存根文件
+      "**/*.ipynb" // 匹配所有 Jupyter Notebook 文件
+    ],
+    "ignore": [ // 忽略的错误代码
+      "E501", // 忽略行过长
+      "W503", // 忽略二进制操作符前换行
+      "E203" // 忽略冒号前空格
+    ],
+    "indentWidth": 4, // 缩进宽度 (可选值: 数字, 默认: 4)
+    "lineWidth": 200, // 行宽限制 (可选值: 数字, 默认: 88)
+    "preview": true, // 启用预览功能 (可选值: true/false, 默认: false)
+    "quoteStyle": "double", // 引号风格 (可选值: "single"/"double"/"preserve", 默认: "double")
+    "select": [ // 启用的规则分类
+      "E", // pycodestyle 错误
+      "F", // Pyflakes
+      "W", // pycodestyle 警告
+      "C90", // mccabe 复杂度
+      "I", // isort
+      "N", // pep8-naming
+      "UP", // pyupgrade
+      "YTT", // flake8-2020
+      "S", // flake8-bandit
+      "BLE", // flake8-blind-except
+      "FBT", // flake8-boolean-trap
+      "B", // flake8-bugbear
+      "A", // flake8-builtins
+      "COM", // flake8-commas
+      "C4", // flake8-comprehensions
+      "DTZ", // flake8-datetimez
+      "T10", // flake8-debugger
+      "ISC", // flake8-implicit-str-concat
+      "ICN", // flake8-import-conventions
+      "G", // flake8-logging-format
+      "INP", // flake8-no-pep420
+      "PIE", // flake8-pie
+      "T20", // flake8-print
+      "PYI", // flake8-pyi
+      "PT", // flake8-pytest-style
+      "Q", // flake8-quotes
+      "RSE", // flake8-raise
+      "RET", // flake8-return
+      "SIM", // flake8-simplify
+      "TID", // flake8-tidy-imports
+      "TCH", // flake8-type-checking
+      "ARG", // flake8-unused-arguments
+      "PTH", // flake8-use-pathlib
+      "ERA", // eradicate
+      "PGH", // pygrep-hooks
+      "PL", // Pylint
+      "TRY", // tryceratops
+      "NPY", // NumPy
+      "RUF" // Ruff 特定规则
+    ],
+    "skipStringNormalization": false, // 跳过字符串规范化 (可选值: true/false, 默认: false)
+    "tabSize": 4, // 制表符大小 (可选值: 数字, 默认: 4)
+    "useTabs": false, // 是否使用制表符 (可选值: true/false, 默认: false)
+  }
+}

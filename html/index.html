@@ -1,479 +1,657 @@
 <!DOCTYPE html>
 <html lang="cn">
-
-<head>
-	<meta charset="utf-8">
-	<title>SmartPing Dashboard</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-	<link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<link href="assets/css/font-awesome.css" rel="stylesheet">
-	<link href="assets/css/style.css" rel="stylesheet">
-	<link href="assets/css/pages/dashboard.css" rel="stylesheet">
-	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-	<!--[if lt IE 9]>
+	<head>
+		<meta charset="utf-8">
+		<title>SmartPing Dashboard</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+		<link href="assets/css/font-awesome.css" rel="stylesheet">
+		<link href="assets/css/style.css" rel="stylesheet">
+		<link href="assets/css/pages/dashboard.css" rel="stylesheet">
+		<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-</head>
+	</head>
 
-<body>
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<span id="cloudbrand" class="brand" style="margin-right: -15px;"></span><a class="brand"
-					href="index.html">SmartPing Dashbord<span id="agentname"></span></a>
-				<span id="banner_last_ck_time" class="pull-right " style="margin-top: 10px;"></span>
+	<body>
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<span id="cloudbrand" class="brand" style="margin-right: -15px"></span><a class="brand" href="index.html">SmartPing Dashbord<span id="agentname"></span></a>
+					<span id="banner_last_ck_time" class="pull-right" style="margin-top: 10px"></span>
+				</div>
+				<!-- /container -->
 			</div>
-			<!-- /container -->
+			<!-- /navbar-inner -->
 		</div>
-		<!-- /navbar-inner -->
-	</div>
-	<!-- /navbar -->
-	<div class="subnavbar">
-		<div class="subnavbar-inner">
-			<div class="container">
-				<ul class="mainnav">
-					<li class="active"><a href="index.html"><i class="icon-mail-forward"></i><span>正向Ping</span> </a>
-					</li>
-					<li><a href="reverse.html"><i class="icon-mail-reply"></i><span>反向Ping</span> </a> </li>
-					<li><a href="topology.html"><i class="icon-bar-chart"></i><span>Ping拓扑</span> </a> </li>
-					<li><a href="mapping.html"><i class="icon-map-marker"></i><span>全国延迟</span> </a> </li>
-					<li><a href="tools.html"><i class="icon-wrench"></i><span>检测工具</span> </a> </li>
-					<li><a id="cfgUrl" href="config.html"><i class="icon-cog"></i><span>系统配置</span> </a> </li>
-				</ul>
+		<!-- /navbar -->
+		<div class="subnavbar">
+			<div class="subnavbar-inner">
+				<div class="container">
+					<ul class="mainnav">
+						<li class="active">
+							<a href="index.html"><i class="icon-mail-forward"></i><span>正向Ping</span> </a>
+						</li>
+						<li><a href="reverse.html"><i class="icon-mail-reply"></i><span>反向Ping</span> </a></li>
+						<li><a href="topology.html"><i class="icon-bar-chart"></i><span>Ping拓扑</span> </a></li>
+						<li><a href="mapping.html"><i class="icon-map-marker"></i><span>全国延迟</span> </a></li>
+						<li><a href="tools.html"><i class="icon-wrench"></i><span>检测工具</span> </a></li>
+						<li><a id="cfgUrl" href="config.html"><i class="icon-cog"></i><span>系统配置</span> </a></li>
+					</ul>
+				</div>
+				<!-- /container -->
 			</div>
-			<!-- /container -->
+			<!-- /subnavbar-inner -->
 		</div>
-		<!-- /subnavbar-inner -->
-	</div>
-	<!-- /subnavbar -->
-	<div class="main" style="margin-top:-20px;">
-		<div class="main-inner">
-			<div class="container">
-
-				<div class="row">
-					<div id="main" class="span10">
-						<div id="lineChart"></div>
-						<!-- ping charts -->
-					</div>
-					<!-- /span10 -->
-					<div class="span2">
-						<div class="widget widget-table action-table">
-							<div class="widget-header"> <i class="icon-th-list"></i>
-								<h3 style="margin-top: -5px;">节点列表 </h3>
-							</div>
-							<!-- /widget-header -->
-							<div class="widget-content">
-								<table class="table table-striped table-bordered" cellpadding="0" cellspacing="1">
-									<thead></thead>
-									<tbody class="agentlist"></tbody>
-								</table>
-							</div>
-							<!-- /widget-content -->
-							<!--div class="widget-footer" style="text-align:center;padding-top:10px;">
+		<!-- /subnavbar -->
+		<div class="main" style="margin-top: -20px">
+			<div class="main-inner">
+				<div class="container">
+					<div class="row">
+						<div id="main" class="span10">
+							<div id="lineChart"></div>
+							<!-- ping charts -->
+						</div>
+						<!-- /span10 -->
+						<div class="span2">
+							<div class="widget widget-table action-table">
+								<div class="widget-header">
+									<i class="icon-th-list"></i>
+									<h3 style="margin-top: -5px">节点列表</h3>
+								</div>
+								<!-- /widget-header -->
+								<div class="widget-content">
+									<table class="table table-striped table-bordered" cellpadding="0" cellspacing="1">
+										<thead></thead>
+										<tbody class="agentlist"></tbody>
+									</table>
+								</div>
+								<!-- /widget-content -->
+								<!--div class="widget-footer" style="text-align:center;padding-top:10px;">
 								<div style="display:inline;white-space:nowrap;">&nbsp;<input id="target" placeholder="节点名称或IP"
 									type="text">
 							</div -->
-							<div style="display:inline;white-space:nowrap;">&nbsp;<input id="target" placeholder="节点名称或IP"
-										type="text" style="margin-top:10px;width:110px">&nbsp;<input class="search" type="button" value="查询"
-										onclick="getLineChart('')" style="margin-top:10px" />
+								<div style="display: inline; white-space: nowrap">
+									&nbsp;<input id="target" placeholder="节点名称或IP" type="text" style="margin-top: 10px; width: 110px">&nbsp;<input
+										class="search"
+										type="button"
+										value="查询"
+										onclick="getLineChart('')"
+										style="margin-top: 10px"
+									/>
 								</div>
-								<div style="display:inline;white-space:nowrap;"><b>开始:</b>&nbsp;<input id="target_starttime" type='text'
-										onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width:120px;"></div>
-								<div style="display:inline;white-space:nowrap;"><b>结束:</b>&nbsp;<input id="target_endtime" type='text'
-										onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width:120px;"></div>
+								<div style="display: inline; white-space: nowrap">
+									<b>开始:</b>&nbsp;<input id="target_starttime" type="text" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 120px">
+								</div>
+								<div style="display: inline; white-space: nowrap">
+									<b>结束:</b>&nbsp;<input id="target_endtime" type="text" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 120px">
+								</div>
+								<div style="display: inline; white-space: nowrap">
+									<b>显示:</b>&nbsp;<select id="target_shownode" style="width: 130px">
+										<option value="0">节点</option>
+										<option value="1">异常</option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
+				<!-- /container -->
 			</div>
-			<!-- /container -->
+			<!-- /main-inner -->
 		</div>
-		<!-- /main-inner -->
-	</div>
-	<!-- /main -->
+		<!-- /main -->
 
-	<div class="footer">
-		<div class="footer-inner">
-			<div class="container">
-				<div class="row">
-					<div class="span12"> &copy; 2017 - 2020 <a target="_blank" href="http://smartping.org">SmartPing.org</a> <span
-							style="float:right" id="verion"></span>
+		<div class="footer">
+			<div class="footer-inner">
+				<div class="container">
+					<div class="row">
+						<div class="span12">
+							&copy; 2017 - 2020 <a target="_blank" href="http://smartping.org">SmartPing.org</a> <span
+								style="float: right"
+								id="verion"
+							></span>
+						</div>
+						<!-- /span12 -->
 					</div>
-					<!-- /span12 -->
+					<!-- /row -->
 				</div>
-				<!-- /row -->
+				<!-- /container -->
 			</div>
-			<!-- /container -->
+			<!-- /footer-inner -->
 		</div>
-		<!-- /footer-inner -->
-	</div>
 
-	<div id="charts" class="modal fade" tabindex="-1" style="width: 830px;height:500px;">
-		<input type="hidden" id="pannelurl" value="" />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div style="text-align:center;padding-top:10px;">
-					<b>StartTime:</b>&nbsp;<input id="starttime" type='text' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"
-						style="width:120px;">
-					<b>EndTime:</b>&nbsp;<input id="endtime" type='text' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"
-						style="width:120px;">
-					&nbsp;<input class="sgraph" type="button" value="Submit" />
+		<div id="charts" class="modal fade" tabindex="-1" style="width: 830px; height: 500px">
+			<input type="hidden" id="pannelurl" value="" />
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div style="text-align: center; padding-top: 10px">
+						<b>StartTime:</b>&nbsp;<input id="starttime" type="text" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 120px">
+						<b>EndTime:</b>&nbsp;<input id="endtime" type="text" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 120px">
+						&nbsp;<input class="sgraph" type="button" value="Submit" />
+					</div>
+					<span id="pannel-title" style="width: 100%; text-align: center; display: block">标题</span>
+					<div class="modal-body" id="pannel-show" style="width: 800px; height: 500px"></div>
 				</div>
-				<span id="pannel-title" style="width:100%;text-align:center;display:block;">标题</span>
-				<div class="modal-body" id="pannel-show" style="width: 800px;height:500px;">
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
 
-	<!-- /footer -->
-	<!-- Le javascript
+		<!-- /footer -->
+		<!-- Le javascript
 ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="assets/js/jquery-1.7.2.min.js"></script>
-	<script src="assets/js/bootstrap.js"></script>
-	<script src="assets/js/echarts.min.js"></script>
-	<script language="JavaScript" type="text/javascript" src="assets/js/My97DatePicker/WdatePicker.js"></script>
-	<script src="assets/js/funcs.js"></script>
-	<script>
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="assets/js/jquery-1.7.2.min.js"></script>
+		<script src="assets/js/bootstrap.js"></script>
+		<script src="assets/js/echarts.min.js"></script>
+		<script language="JavaScript" type="text/javascript" src="assets/js/My97DatePicker/WdatePicker.js"></script>
+		<script src="assets/js/funcs.js"></script>
+		<script>
+		var colors = [
+			'#DC143C','#00FFFF','#0000FF','#8A2BE2','#5F9EA0','#7FFF00','#D2691E','#FF7F50','#6495ED','#7FFFD4','#FFE4C4','#8B008B',
+			'#00FFFF','#00008B','#008B8B','#B8860B','#A9A9A9','#006400','#BDB76B','#556B2F','#FF8C00','#9932CC','#8B0000','#F0FFFF',
+			'#E9967A','#8FBC8B','#483D8B','#2F4F4F','#00CED1','#9400D3','#FF1493','#00BFFF','#696969','#228B22','#FF00FF','#FFD700',
+			'#DAA520','#ADFF2F','#FF69B4','#4B0082','#ADD8E6','#F08080','#90EE90','#FFB6C1','#FFA07A','#20B2AA','#87CEFA','#778899',
+			'#00FF00','#FF00FF','#800000','#66CDAA','#0000CD','#BA55D3','#9370DB','#3CB371','#00FA9A','#48D1CC','#C71585','#191970',
+			'#808000','#FFA500','#FF4500','#FA8072','#2E8B57','#D8BFD8','#D2B48C','#008080','#EE82EE','#FFFF00','#FF6347','#C0C0C0'
+		];
+
+		var myChart;
+		var Lastcheck = []; // 时间
+		var Losspk = []; // 丢包率
+		var Maxdelay = []; // 最大延迟\
+		var Mindelay = []; // 最小延迟
+		var Avgdelay = []; // 平均延迟
+		var Nodname_title = ""; // 节点名称
+		var Unit = "单位 %";
+		var Noshow = {}; // 暂存取消显示的IP数据
+		var Show = []; // 当前显示的数据
+		var len_losspk = 25; // 判断是否丢包起始位置
+		var Topoip = []; // 未显示的IP
+		var controller_time = 1; // 定时器开关 1开（默认）0关
+
 		getLineChart("");
-		function changeAgent (n, url)
-		{
-			$(".alerticon-" + n).addClass("icon-spinner").addClass("icon-spin").addClass("animated");
-			getLineChart(url)
+		// 返回数组要求
+		function checkAge(age) {
+			return age >= 1;
 		}
-		function isTarget (targets, name, addr)
-		{
-			if (targets.length == 1 && targets[0] == "") return true;
-			return targets.some(target =>
-			{
-        // if (target.startsWith("-")) {
-          // tar = target.substr(1);
-          // 	return name.includes(tar) || addr.includes(tar);
-        // } else {
-					return addr.includes(target);
-        // }
+		function resetChart() {
+			myChart.clear();
+			Lastcheck = []; // 时间
+			Losspk = []; // 丢包率
+			Maxdelay = []; // 最大延迟
+			Mindelay = []; // 最小延迟
+			Avgdelay = []; // 平均延迟
+			Unit = "单位 %";
+			Noshow = {}; // 暂存取消显示的IP数据
+			Show = []; // 当前显示的数据
+			len_losspk = 25; // 判断是否丢包起始位置
+			Topoip = []; // 未显示的IP
+			controller_time = 1; // 定时器开关 1开（默认）0关
+		}
+		function initDefaultChart() {
+			opt = {
+				title: { text: "" },
+				legend: { data: ["maxDelay", "avgDelay", "minDelay", "lossPk"], selected: { "maxDelay": false, "minDelay": false } },
+				toolbox: { feature: { dataView: {}, saveAsImage: { pixelRatio: 2 } } },
+				tooltip: { trigger: "axis" },
+				xAxis: {
+					axisTick: {
+						lineStyle: {
+							type: "dashed", // 设置刻度线为虚线
+						},
+					},
+					splitLine: { lineStyle: { type: "dashed" }, show: true },
+					data: [],
+				},
+				dataZoom: [{}],
+				yAxis: [{
+					axisTick: {
+						lineStyle: {
+							type: "dashed", // 设置刻度线为虚线
+						},
+					},
+					splitLine: { lineStyle: { type: "dashed" }, show: true },
+					type: "value",
+					name: "Delay",
+					position: "left",
+				}, { type: "value", name: "Package(LOSS)", min: 0, max: 100, position: "right", axisLabel: { formatter: "{value} %" } }],
+				series: [{ name: "maxDelay", type: "line", animation: false, areaStyle: { normal: {} }, lineStyle: { normal: { width: 0 } }, data: [] }, {
+					name: "minDelay",
+					type: "line",
+					animation: false,
+					areaStyle: { normal: {} },
+					lineStyle: { normal: { width: 0 } },
+					data: [],
+				}, {
+					name: "avgDelay",
+					type: "line",
+					data: [],
+					itemStyle: { normal: { color: "#00CC66" } },
+					animation: false,
+					areaStyle: { normal: {} },
+					lineStyle: { normal: { width: 0 } },
+				}, {
+					name: "lossPk",
+					type: "line",
+					yAxisIndex: 1,
+					data: [],
+					itemStyle: { normal: { color: "#FF0000" } },
+					animation: false,
+					areaStyle: { normal: {} },
+					lineStyle: { normal: { width: 0 } },
+				}],
+			};
+			myChart = echarts.init(document.getElementById("pannel-show"));
+			myChart.clear();
+			myChart.setOption(opt);
+		}
+		function notLossData() {
+			opt = {
+				title: {
+					text: "当前节点未检测到异常数据",
+					left: "center",
+					top: "30%",
+					right: "auto",
+					textStyle: { color: "#F72C5B", fontSize: 18, fontWeight: 600 },
+				},
+				toolbox: { feature: { dataView: { show: true, readOnly: false }, dataZoom: { yAxisIndex: "none" }, restore: {}, saveAsImage: {} } },
+				tooltip: { trigger: "axis", axisPointer: { type: "cross" } },
+				grid: { x: 20, x2: 0, left: "0%" },
+				dataZoom: [{ type: "slider", start: 80, xAxisIndex: [0], end: 100 }],
+				xAxis: {},
+				yAxis: { offset: -30, axisLine: { show: false }, splitLine: { show: true, lineStyle: { type: "dashed" } } },
+				series: [],
+			};
+			myChart = echarts.init(document.getElementById("top_main"));
+			myChart.clear();
+			myChart.setOption(opt);
+		}
+		function loadLossData() {
+			if ($(".top").eq(1).css("background-color") == "rgb(94, 124, 224)") {
+				data = Maxdelay;
+				Unit = "单位 ms";
+			} else if ($(".top").eq(2).css("background-color") == "rgb(94, 124, 224)") {
+				data = Mindelay;
+				Unit = "单位 ms";
+			} else if ($(".top").eq(3).css("background-color") == "rgb(94, 124, 224)") {
+				data = Avgdelay;
+				Unit = "单位 ms";
+			} else {
+				data = Losspk;
+				Unit = "单位 %";
+			}
+
+			selected = {};
+			for (var i = 0; i < Show.length; i++) {
+				selected[Show[i]] = true;
+			}
+			for (var key in Noshow) {
+				selected[Noshow[key]] = false;
+			}
+			opt = {
+				title: {
+					text: Nodname_title,
+					subtext: Unit,
+				},
+				toolbox: {
+					feature: {
+						dataView: { show: true, readOnly: false },
+						dataZoom: {
+							yAxisIndex: "none",
+						},
+						restore: {},
+						saveAsImage: {},
+					},
+				},
+				tooltip: {
+					trigger: "axis",
+					axisPointer: {
+						type: "cross",
+					},
+				},
+				grid: {
+					x: 20,
+					x2: 0,
+					left: 0,
+				},
+				dataZoom: [{
+					type: "slider",
+					start: 80,
+					end: 100,
+					xAxisIndex: [0],
+				}],
+				legend: {
+					orient: "horizontal",
+					x: "right",
+					y: "top",
+					selected: selected,
+					data: Show,
+					show: false,
+				},
+				xAxis: {
+					data: Lastcheck,
+				},
+				yAxis: {
+					offset: -30,
+					axisLine: { show: true },
+					splitLine: {
+						show: true,
+						lineStyle: {
+							type: "dashed",
+						},
+					},
+				},
+
+				series: data,
+			};
+			myChart = echarts.init(document.getElementById("top_main"));
+			myChart.clear();
+			myChart.setOption(opt);
+		}
+		// 显示一个时间段内丢包的探测目的地
+		function appdline(Ip, Name, data) {
+			// var index = Losspk.push({ type: "line", smooth: true, name: Nodname_title.split("-")[0] + "-->" + Name, lineStyle: { color: colors[ - 1] }, data: data.losspk });
+			var index = Show.length + 1;
+			Show[index - 1] = Nodname_title.split("-")[0] + "-->" + Name;
+			Losspk[index - 1] = { type: "line", smooth: true, name: Show[index - 1], itemStyle: { normal: { color: colors[index - 1], lineStyle: { color: colors[index - 1] } } }, data: data.losspk };
+			Maxdelay[index - 1] = { type: "line", smooth: true, name: Show[index - 1], itemStyle: { normal: { color: colors[index - 1], lineStyle: { color: colors[index - 1] } } }, data: data.maxdelay };
+			Mindelay[index - 1] = { type: "line", smooth: true, name: Show[index - 1], itemStyle: { normal: { color: colors[index - 1], lineStyle: { color: colors[index - 1] } } }, data: data.mindelay };
+			Avgdelay[index - 1] = { type: "line", smooth: true, name: Show[index - 1], itemStyle: { normal: { color: colors[index - 1], lineStyle: { color: colors[index - 1] } } }, data: data.avgdelay };
+			if (data.losspk[data.maxdelay.length - 1] > 0) {
+				$(".list").append(
+					"<li class=\"name\" >\
+                <p class=\"pcolor\" style=\"background-color:" + colors[index - 1] + ";\"></p><p class=\"list-name\" ><span class='name'>" + Show[index - 1] + "</span><br>\
+                <span>(max:" + data.maxdelay[data.maxdelay.length - 1] + " avg:" + data.avgdelay[data.maxdelay.length - 1] + "\
+                min:" + data.mindelay[data.maxdelay.length - 1] + "<span style = \"color:red\"> losspk:" + data.losspk[data.maxdelay.length - 1] + "%</span>)</span></p></li>",
+				);
+			} else {
+				$(".list").append(
+					"<li class=\"name\" >\
+            <p class=\"pcolor\" style=\"background-color:" + colors[index - 1] + ";\"></p><p class=\"list-name\" ><span class='name'>" + Show[index - 1] + "</span><br>\
+            <span>(max:" + data.maxdelay[data.maxdelay.length - 1] + " avg:" + data.avgdelay[data.maxdelay.length - 1] + "\
+              min:" + data.mindelay[data.maxdelay.length - 1] + "<span> losspk:" + data.losspk[data.maxdelay.length - 1] + "%</span>)</span></p></li>",
+				);
+			}
+			$("li.name").on("click", function() {
+				var name = $(this).find("span.name").text();
+				if (name in Noshow) {
+					delete Noshow[name];
+				} else {
+					Noshow[name] = name;
+				}
+				loadLossData();
 			});
 		}
-		function getLineChart (url)
-		{
-			if (url != "") {
-				url = "/api/proxy.json?g=" + url
+		function clearAllIntervals(url) {
+			let id = setInterval(() => {}, 0);
+			while (id--) {
+				clearInterval(id);
 			}
-			$.getJSON(url + "/api/config.json", function (result)
-			{
+      var now = new Date();
+      var now_ms = now.getSeconds() * 1000 + now.getMilliseconds();
+			setInterval(function() {
+				getLineChart(url);
+			}, 60000 - now_ms);
+		}
+		function changeAgent(n, url) {
+			$(".alerticon-" + n).addClass("icon-spinner").addClass("icon-spin").addClass("animated");
+			getLineChart(url);
+		}
+		function isTarget(targets, name, addr) {
+			if (targets.length == 1 && targets[0] == "") return true;
+			return targets.some(target => {
+				// if (target.startsWith("-")) {
+				// tar = target.substr(1);
+				// 	return name.includes(tar) || addr.includes(tar);
+				// } else {
+				return addr.includes(target);
+				// }
+			});
+		}
+		function getLineChart(url) {
+			clearAllIntervals(url);
+			if (url != "") {
+				url = "/api/proxy.json?g=" + url;
+			}
+			$.getJSON(url + "/api/config.json", function(result) {
+        let litop = ".one";
+        if ($(".top").eq(1).css("background-color") == "rgb(94, 124, 224)") {
+          litop = ".two";
+        } else if ($(".top").eq(2).css("background-color") == "rgb(94, 124, 224)") {
+          litop = ".three";
+        } else if ($(".top").eq(3).css("background-color") == "rgb(94, 124, 224)") {
+          litop = ".four";
+        } else {
+          litop = ".one";
+        }
+
 				$("#lineChart").html("");
 				$(".agentlist").html("");
-				$("#agentname").html(" (" + result["Name"] + ")")
-				AgentMode(result["Mode"])
-				$("#verion").html("Version: " + result["Ver"])
-				$.each(result["Network"], function (i, network)
-				{
+				$("#agentname").html(" (" + result["Name"] + ")");
+				AgentMode(result["Mode"]);
+				$("#verion").html("Version: " + result["Ver"]);
+				$.each(result["Network"], function(i, network) {
 					if (network["Smartping"]) {
-						$(".agentlist").append("<tr><td style='font-size:12px;white-space:nowrap;'><i class='alerticon-" + network["Name"] + "'></i>&nbsp;" +
-							"<a onclick=changeAgent('" + network["Name"] + "','http://" + network["Addr"] + ":" + result["Port"] + "')>" + network["Name"] + "</a></td></tr>");
+						$(".agentlist").append(
+							"<tr><td style='font-size:12px;white-space:nowrap;'><i class='alerticon-" + network["Name"] + "'></i>&nbsp;"
+								+ "<a onclick=changeAgent('" + network["Name"] + "','http://" + network["Addr"] + ":" + result["Port"] + "')>" + network["Name"]
+								+ "</a></td></tr>",
+						);
 					}
 				});
 				targets = $("#target").val().trim().split(/[ ,;]/);
 				starttime = $("#target_starttime").val();
 				endtime = $("#target_endtime").val();
+				shownode = $("#target_shownode").val();
 				starts = "";
-				if (starttime != "") {
-					starts = '%26starttime=' + starttime + '%26endtime=' + endtime;
-				}
-				$.each(result["Network"][result["Addr"]]["Ping"], function (i, mAddr)
-				{
-					if (isTarget(targets, result["Name"], result["Network"][mAddr]["Name"])) {
-						$("#lineChart").append("<div class='img showcharts' " +
-							"style='text-align:center;float:left;width:30.3%;height:130px;margin-right:3%;margin-top:20px;;background-size:100% 100%;' " +
-							"imgsrc='/api/graph.png?g=http://" + result["Addr"] + ":" + result["Port"] + "/api/ping.json?ip=" + mAddr + starts + "' " +
-							"apiurl='/api/proxy.json?g=http://" + result["Addr"] + ":" + result["Port"] + "/api/ping.json?ip=" + mAddr + starts + "' >" +
-							"<b style='font-color:#333333'>" + result["Name"] + "->" + result["Network"][mAddr]["Name"] + "</b></div>");
+				if (shownode == "1") {
+					resetChart();
+					$("#lineChart").append(
+						"<ul class='ch-u'>"
+							+ "<li class='top one'>丢包率</li>"
+							+ "<li class='top two'>最大延迟</li>"
+							+ "<li class='top three'>最小延迟</li>"
+							+ "<li class='top four'>平均延迟</li>"
+							+ "</ul><ul class='ch-s'><li id='detec_tar'>探测目标</li><li id='show_tar'>异常目标</li></ul>"
+							+ "<div id='top_main' style='width:1000px;height:600px;'></div>"
+							+ "<ul class='list'></ul>",
+					);
+          $(".top").siblings(litop).css("background-color", "rgb(94, 124, 224)");
+					$("li.top").on("click", function() {
+						$(".top").css({ "background-color": "#e9edfa" });
+						$(this).css({ "background-color": "#5e7ce0" });
+						loadLossData();
+					});
+					if (starttime != "") {
+						starts = "?starttime=" + starttime + "%26endtime=" + endtime;
 					}
-				});
-				layzeImg();
-			}).fail(function (xhr, status)
-			{
+					Nodname_title = result["Name"];
+					$.get(url + "/api/ping.json" + starts).done(function(data) {
+						Lastcheck = Object.values(data)[0].lastcheck;
+						for (let key in data) {
+							y = data[key].losspk;
+							s = y.slice(y.length * 0.9, y.length);
+
+							if (s.find(checkAge)) {
+								appdline(key, result["Network"][key]["Name"], data[key]);
+							}
+						}
+						$("#show_tar").html("异常目标：" + Show.length);
+						if (Show.length == 0) {
+							notLossData();
+						} else {
+							loadLossData();
+						}
+					});
+				} else {
+					initDefaultChart();
+					if (starttime != "") {
+						starts = "%26starttime=" + starttime + "%26endtime=" + endtime;
+					}
+					$.each(result["Network"][result["Addr"]]["Ping"], function(i, mAddr) {
+						if (isTarget(targets, result["Name"], result["Network"][mAddr]["Name"])) {
+							$("#lineChart").append(
+								"<div class='img showcharts' "
+									+ "style='text-align:center;float:left;width:30.3%;height:130px;margin-right:3%;margin-top:20px;;background-size:100% 100%;' "
+									+ "imgsrc='/api/graph.png?g=http://" + result["Addr"] + ":" + result["Port"] + "/api/ping.json?ip=" + mAddr + starts + "' "
+									+ "apiurl='/api/proxy.json?g=http://" + result["Addr"] + ":" + result["Port"] + "/api/ping.json?ip=" + mAddr + starts + "' >"
+									+ "<b style='font-color:#333333'>" + result["Name"] + "->" + result["Network"][mAddr]["Name"] + "</b></div>",
+							);
+						}
+					});
+					layzeImg();
+				}
+			}).fail(function(xhr, status) {
 				alert(xhr.responseText);
 				Refresh();
 			});
 		}
-		$("#main").on("click", ".showcharts", function ()
-		{
-			//window.clearInterval(int)
+		$("#main").on("click", ".showcharts", function() {
+			// window.clearInterval(int)
 			var modalWidth = $("#charts").width();
 			var left = "-" + parseInt(modalWidth) / 2 + "px";
-			$('#charts').modal('show').css({ "margin-left": left });
+			$("#charts").modal("show").css({ "margin-left": left });
 			url = $(this).attr("apiurl");
 			$("#pannelurl").attr("value", url);
-			var title = $(this).find('b').text();
-			$('#pannel-title').text(title);
-			$.get(url).done(function (data)
-			{
-				//var data = JSON.parse(data);
+			var title = $(this).find("b").text();
+			$("#pannel-title").text(title);
+			$.get(url).done(function(data) {
+				// var data = JSON.parse(data);
 				myChart.setOption({
 					yAxis: {
-            axisTick: {
-              lineStyle: {
-                type: 'dashed' // 设置刻度线为虚线
-              }
-            },
-						splitLine: {
-              lineStyle: {
-                type: 'dashed'
-              },
-              show: true
-            }
+						axisTick: {
+							lineStyle: {
+								type: "dashed", // 设置刻度线为虚线
+							},
+						},
+						splitLine: { lineStyle: { type: "dashed" }, show: true },
 					},
 					xAxis: {
-            axisTick: {
-              lineStyle: {
-                type: 'dashed' // 设置刻度线为虚线
-              }
-            },
-						splitLine: {
-              lineStyle: {
-                type: 'dashed'
-              },
-              show: true
-            },
-						data: data.lastcheck
+						axisTick: {
+							lineStyle: {
+								type: "dashed", // 设置刻度线为虚线
+							},
+						},
+						splitLine: { lineStyle: { type: "dashed" }, show: true },
+						data: data.lastcheck,
 					},
-					series: [{
-						name: 'maxDelay',
-						data: data.maxdelay
-					},
-					{
-						name: 'minDelay',
-						data: data.mindelay
-					},
-					{
-						name: 'avgDelay',
-						data: data.avgdelay
-					},
-					{
-						name: 'lossPk',
-						data: data.losspk
-					}]
+					series: [{ name: "maxDelay", data: data.maxdelay }, { name: "minDelay", data: data.mindelay }, { name: "avgDelay", data: data.avgdelay }, {
+						name: "lossPk",
+						data: data.losspk,
+					}],
 				});
 			});
 		});
-		$(".sgraph").click(function ()
-		{
+		$(".sgraph").click(function() {
 			start = $("#starttime").val();
 			endtime = $("#endtime").val();
 			url = $("#pannelurl").attr("value");
-			$.get(url + "%26starttime=" + start + "%26endtime=" + endtime).done(function (data)
-			{
-				//console.log(data)
+			$.get(url + "%26starttime=" + start + "%26endtime=" + endtime).done(function(data) {
+				// console.log(data)
 				myChart.setOption({
 					yAxis: {
-            axisTick: {
-              lineStyle: {
-                type: 'dashed' // 设置刻度线为虚线
-              }
-            },
-						splitLine: {
-              lineStyle: {
-                type: 'dashed'
-              },
-              show: true
-            }
+						axisTick: {
+							lineStyle: {
+								type: "dashed", // 设置刻度线为虚线
+							},
+						},
+						splitLine: { lineStyle: { type: "dashed" }, show: true },
 					},
 					xAxis: {
-            axisTick: {
-              lineStyle: {
-                type: 'dashed' // 设置刻度线为虚线
-              }
-            },
-						splitLine: {
-              lineStyle: {
-                type: 'dashed'
-              },
-              show: true
-            },
-						data: data.lastcheck
+						axisTick: {
+							lineStyle: {
+								type: "dashed", // 设置刻度线为虚线
+							},
+						},
+						splitLine: { lineStyle: { type: "dashed" }, show: true },
+						data: data.lastcheck,
 					},
-					series: [{
-						name: 'maxDelay',
-						data: data.maxdelay
-					},
-					{
-						name: 'minDelay',
-						data: data.mindelay
-					},
-					{
-						name: 'avgDelay',
-						data: data.avgdelay
-					},
-					{
-						name: 'lossPk',
-						data: data.losspk
-					}]
+					series: [{ name: "maxDelay", data: data.maxdelay }, { name: "minDelay", data: data.mindelay }, { name: "avgDelay", data: data.avgdelay }, {
+						name: "lossPk",
+						data: data.losspk,
+					}],
 				});
 			});
 		});
-		opt = {
-			title: {
-				text: ''
-			},
-			legend: {
-				data: ['maxDelay', 'avgDelay', 'minDelay', 'lossPk'],
-				selected: {
-					'maxDelay': false,
-					'minDelay': false
-				}
-			},
-			toolbox: {
-				feature: {
-					dataView: {},
-					saveAsImage: {
-						pixelRatio: 2
-					}
-				}
-			},
-			tooltip: {
-				trigger: 'axis'
-			},
-			xAxis: {
-        axisTick: {
-          lineStyle: {
-            type: 'dashed' // 设置刻度线为虚线
-          }
-        },
-          splitLine: {
-            lineStyle: {
-              type: 'dashed'
-            },
-            show: true
-          },
-				data: []
-			},
-			dataZoom: [{}],
-			yAxis: [{
-        axisTick: {
-          lineStyle: {
-            type: 'dashed' // 设置刻度线为虚线
-          }
-        },
-        splitLine: {
-          lineStyle: {
-            type: 'dashed'
-          },
-          show: true
-        },
-				type: 'value',
-				name: 'Delay',
-				position: 'left'
-			}, {
-				type: 'value',
-				name: 'Package(LOSS)',
-				min: 0,
-				max: 100,
-				position: 'right',
-				axisLabel: {
-					formatter: '{value} %'
-				}
-			}],
-			series: [{
-				name: 'maxDelay',
-				type: 'line',
-				animation: false,
-				areaStyle: {
-					normal: {}
-				},
-				lineStyle: {
-					normal: {
-						width: 0
-					}
-				},
-				data: []
-			},
-			{
-				name: 'minDelay',
-				type: 'line',
-				animation: false,
-				areaStyle: {
-					normal: {}
-				},
-				lineStyle: {
-					normal: {
-						width: 0
-					}
-				},
-				data: []
-			},
-			{
-				name: 'avgDelay',
-				type: 'line',
-				data: [],
-				itemStyle: {
-					normal: {
-						color: '#00CC66'
-					}
-				},
-				animation: false,
-				areaStyle: {
-					normal: {}
-				},
-				lineStyle: {
-					normal: {
-						width: 0
-					}
-				}
-			},
-			{
-				name: 'lossPk',
-				type: 'line',
-				yAxisIndex: 1,
-				data: [],
-				itemStyle: {
-					normal: {
-						color: '#FF0000'
-					}
-				},
-				animation: false,
-				areaStyle: {
-					normal: {}
-				},
-				lineStyle: {
-					normal: {
-						width: 0
-					}
-				}
-			}]
-		}
-		var myChart = echarts.init(document.getElementById('pannel-show'));
-		myChart.setOption(opt);
-		function layzeImg ()
-		{
-			var aImg = document.querySelectorAll('div.img');
+		function layzeImg() {
+			var aImg = document.querySelectorAll("div.img");
 			var len = aImg.length;
 			var n = 0;
 			for (var i = n; i < len; i++) {
 				if (aImg[i].offsetTop < document.documentElement.clientHeight + (document.body.scrollTop || document.documentElement.scrollTop)) {
-					if (aImg[i].style.backgroundImage == '') {
-						aImg[i].style.backgroundImage = "url('" + aImg[i].getAttribute('imgsrc') + "')";
+					if (aImg[i].style.backgroundImage == "") {
+						aImg[i].style.backgroundImage = "url('" + aImg[i].getAttribute("imgsrc") + "')";
 					}
 					n = i + 1;
 				}
 			}
-			window.onscroll = function ()
-			{
+			window.onscroll = function() {
 				for (var i = n; i < len; i++) {
 					if (aImg[i].offsetTop < document.documentElement.clientHeight + (document.body.scrollTop || document.documentElement.scrollTop)) {
-						if (aImg[i].style.backgroundImage == '') {
-							aImg[i].style.backgroundImage = "url('" + aImg[i].getAttribute('imgsrc') + "')";
+						if (aImg[i].style.backgroundImage == "") {
+							aImg[i].style.backgroundImage = "url('" + aImg[i].getAttribute("imgsrc") + "')";
 						}
 						n = i + 1;
 					}
 				}
 			};
-		};
-	</script>
-</body>
-
+		}
+		</script>
+		<style>
+		.ch-s {
+			margin: 0;
+			padding-left: 0;
+			overflow: hidden;
+		}
+		.ch-s li {
+			display: block;
+			margin-right: 10px;
+			padding: 5px 20px;
+			float: left;
+			border: 1px solid #ADB0B8;
+		}
+		.ch-u li {
+			display: block;
+			width: 62px;
+			margin-right: 6px;
+			padding: 5px 0;
+			float: left;
+			background-color: #E9EDFA;
+			font-size: 10px;
+			text-align: center;
+		}
+		.list {
+			width: 1180px;
+			margin: 0 8px;
+			padding-left: 5px;
+		}
+		.list .pcolor {
+			position: absolute;
+			width: 10px;
+			height: 10px;
+			margin-top: 1em;
+		}
+		.list li {
+			display: block;
+			width: 280px;
+			margin-right: 10px;
+			margin-bottom: 6px;
+			padding: 0;
+			float: left;
+			text-align-last: left;
+		}
+		.list .list-name {
+			margin-left: 20px;
+		}
+		.list p {
+			margin: 0;
+		}
+		</style>
+	</body>
 </html>
